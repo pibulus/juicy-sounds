@@ -16,8 +16,9 @@ export * as SynthEngine from './synthEngine.ts';
 export * as HapticService from './hapticService.ts';
 
 // New universal sound system exports
-export { playSound, listAvailableSounds, getSoundCategories, playToggleSound, playSelectionSound, playPanelSound, testAllSounds } from './soundMapping.ts';
-export { SOUND_LIBRARY, SOUND_CATEGORIES, SOUND_MANIFEST, SOUND_THEMES } from './soundConfig.ts';
+export { playSound, listAvailableSounds, getSoundCategories, getAvailableSounds } from './soundMapping.ts';
+export { SOUND_LIBRARY, SOUND_CATEGORIES } from './soundConfig.ts';
+export { throttleSound, throttledSounds } from './throttledSound.ts';
 
 // Types
 export type {
@@ -32,8 +33,16 @@ export type {
   PlaySoundOptions
 } from './SoundPack.ts';
 
+export type {
+  PlaySoundInterface,
+  GradientPanelColor,
+  SoundTheme,
+  SoundCategory,
+  SoundLibrary
+} from './soundTypes.ts';
+
 // Quick start helper
-export function createSoundManager(options?: any) {
+export async function createSoundManager(options?: any) {
   const { SoundPackManager } = await import('./SoundPack.ts');
   return new SoundPackManager(options);
 }

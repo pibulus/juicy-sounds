@@ -37,29 +37,36 @@ import { playSound } from "https://raw.githubusercontent.com/pibulus/juice-sound
 </script>
 ```
 
-### Use It (NEW Simplified API!)
+### Use It (NEW Simplified API with TypeScript!)
 
-The simplest thing that could possibly work:
+The simplest thing that could possibly work - now with full TypeScript support:
 
 ```javascript
 import { playSound } from 'juicy-sounds';
 
-// Just play sounds - no setup required!
+// ALL functions are discoverable through IDE autocomplete!
 button.onClick = () => playSound.primaryClick();
 button.onMouseEnter = () => playSound.hover();
 
-// Handle toggles with state
+// Handle toggles with proper methods
 toggle.onChange = (isOn) => {
-  playSound[isOn ? 'toggleOn' : 'toggleOff']();
+  isOn ? playSound.toggleOn() : playSound.toggleOff();
 };
 
-// Success/error feedback
+// Success/error feedback - direct methods!
 try {
   await saveData();
-  playSound.feedbackSuccess();
+  playSound.success();
 } catch {
-  playSound.feedbackError();
+  playSound.error();
 }
+
+// NEW: Gradient panels helper - perfect for color-coded UI
+panel.onMouseEnter = () => playSound.gradientPanel('red');
+panel2.onMouseEnter = () => playSound.gradientPanel('blue');
+
+// Throttled versions for high-frequency events
+slider.onInput = () => playSound.sliderStepThrottled();
 ```
 
 ### Or Use the Original Pack System

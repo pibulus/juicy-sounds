@@ -8,15 +8,24 @@
  * @example
  * // Use in any component:
  * import { playSound } from './soundMapping.ts'
+ *
+ * // All functions are now discoverable through autocomplete!
  * onClick={() => playSound.primaryClick()}
  * onMouseEnter={() => playSound.hover()}
  *
- * @author Juicy Sounds Team
- * @version 2.0.0 - Simplified universal system
+ * // Gradient panels - two ways to use:
+ * onMouseEnter={() => playSound.gradientPanelsRed()}  // Specific color
+ * onMouseEnter={() => playSound.gradientPanel('red')} // Helper method
+ *
+ * @author ButtonStudio Audio Team
+ * @version 3.1.0 - Improved with TypeScript types and helpers
  */
 
 import { SOUND_CATEGORIES } from "./soundConfig.ts";
 import { soundService } from "./soundService.ts";
+import { buttonSounds } from "./synthEngine.ts";
+import { throttleSound } from "./throttledSound.ts";
+import type { GradientPanelColor, PlaySoundInterface } from "./soundTypes.ts";
 
 /**
  * Dynamic Sound Mapping - Connects config to actual playback
@@ -24,11 +33,15 @@ import { soundService } from "./soundService.ts";
  * Automatically maps sound categories from config to soundService functions.
  * No need to manually maintain mappings - they're generated from the config!
  */
+
+// Create dynamic sound mapping from config
 function createSoundMapping() {
   const mapping: Record<string, any> = {};
 
-  // Map each category from config to actual sound functions  
-  for (const [categoryName, categoryConfig] of Object.entries(SOUND_CATEGORIES)) {
+  // Map each category from config to actual sound functions
+  for (
+    const [categoryName, categoryConfig] of Object.entries(SOUND_CATEGORIES)
+  ) {
     mapping[categoryName] = {};
 
     // For each action in the category, create the actual function call
@@ -37,9 +50,9 @@ function createSoundMapping() {
         mapping[categoryName][actionName] = () => {
           // Get the sound file path from config
           const soundFile = soundGetter();
-          
+
           // Play the sound file directly using soundService
-          return soundService.playCustomSound(soundFile)?.catch(() => {});
+          soundService.playCustomSound(soundFile)?.catch(() => {});
         };
       }
     }
@@ -49,6 +62,21 @@ function createSoundMapping() {
 }
 
 export const SOUND_MAPPING = createSoundMapping();
+
+// Special sound preview function for sound picker
+SOUND_MAPPING.soundPreview = {
+  preview: (soundType: string) => {
+    const soundMap: Record<string, () => void> = {
+      slate: buttonSounds.playSlate,
+      amber: buttonSounds.playAmber,
+      coral: buttonSounds.playCoral,
+      sage: buttonSounds.playSage,
+      pearl: buttonSounds.playPearl,
+    };
+    return soundMap[soundType]?.() || buttonSounds.playSlate();
+  },
+  hover: () => soundService.playButtonHover(),
+};
 
 /**
  * Universal Sound Interface for Components
@@ -61,17 +89,24 @@ export const SOUND_MAPPING = createSoundMapping();
  * onClick={() => playSound.primaryClick()}
  * onMouseEnter={() => playSound.hover()}
  */
-function createPlaySoundInterface() {
+
+// Auto-generate clean playSound interface from categories
+function createPlaySoundInterface(): PlaySoundInterface {
   const playSound: Record<string, any> = {};
 
   // Generate functions for each category and action
   for (const [categoryName, categoryConfig] of Object.entries(SOUND_MAPPING)) {
     if (typeof categoryConfig === "object") {
-      for (const [actionName, actionFunction] of Object.entries(categoryConfig)) {
+      for (
+        const [actionName, actionFunction] of Object.entries(categoryConfig)
+      ) {
         if (typeof actionFunction === "function") {
           // Create camelCase function names: primaryButtons.click -> primaryClick
-          const functionName = 
-            categoryName.replace("Controls", "").replace("Buttons", "").replace("Actions", "").replace("Sounds", "") +
+          const functionName =
+            categoryName.replace("Controls", "").replace("Buttons", "").replace(
+              "Actions",
+              "",
+            ) +
             actionName.charAt(0).toUpperCase() + actionName.slice(1);
           playSound[functionName] = actionFunction;
         }
@@ -80,12 +115,55 @@ function createPlaySoundInterface() {
   }
 
   // Add universal hover function (most commonly used)
-  playSound.hover = () => soundService.playCustomSound("scroll-haptic")?.catch(() => {});
+  playSound.hover = () => soundService.playButtonHover()?.catch(() => {});
 
-  return playSound;
+  // Add special convenience functions
+  playSound.soundPreview = SOUND_MAPPING.soundPreview.preview;
+
+  // Add throttled versions for high-frequency sounds
+  playSound.sliderStepThrottled = throttleSound(
+    playSound.sliderStep || (() => {}),
+    150,
+    "slider-step",
+  );
+
+  playSound.hoverThrottled = throttleSound(
+    playSound.hover || (() => {}),
+    200,
+    "hover",
+  );
+
+  playSound.gradientPanelThrottled = throttleSound(
+    playSound.gradientPanel || (() => {}),
+    300,
+    "gradient-panel",
+  );
+
+  // Add helper function for gradient panels - MUCH easier to use!
+  playSound.gradientPanel = (color: GradientPanelColor) => {
+    const functionName = `gradientPanels${color.charAt(0).toUpperCase()}${
+      color.slice(1)
+    }`;
+    const fn = playSound[functionName];
+    if (fn && typeof fn === "function") {
+      fn();
+    } else {
+      // Fallback to hover if color not found
+      playSound.hover();
+    }
+  };
+
+  // Add feedback sounds as direct methods for easier discovery
+  playSound.success = () => soundService.playSuccess();
+  playSound.error = () => soundService.playError();
+  playSound.warning = () => soundService.playWarning();
+  playSound.completion = () => soundService.playCompletion();
+  playSound.celebration = () => soundService.playCelebration();
+
+  return playSound as PlaySoundInterface;
 }
 
-export const playSound = createPlaySoundInterface();
+export const playSound: PlaySoundInterface = createPlaySoundInterface();
 
 // ===================================================================
 // SOUND AUDIT HELPERS - For systematic sound application
@@ -100,6 +178,43 @@ export function listAvailableSounds() {
   console.groupEnd();
 }
 
+/**
+ * Get all available sound function names
+ * Useful for debugging and documentation
+ */
+export function getAvailableSounds(): string[] {
+  return Object.keys(playSound).sort();
+}
+
+/**
+ * USAGE EXAMPLES - Copy these into your components!
+ *
+ * @example
+ * // Button clicks
+ * <button onClick={() => playSound.primaryClick()}>Submit</button>
+ * <button onClick={() => playSound.secondaryClick()}>Cancel</button>
+ *
+ * @example
+ * // Hover effects
+ * <div onMouseEnter={() => playSound.hover()}>Hover me</div>
+ *
+ * @example
+ * // Gradient panels - NEW easier way!
+ * <div onMouseEnter={() => playSound.gradientPanel('red')}>Red Panel</div>
+ * <div onMouseEnter={() => playSound.gradientPanel('blue')}>Blue Panel</div>
+ *
+ * @example
+ * // Toggle switches
+ * <Switch
+ *   onChange={(checked) => checked ? playSound.toggleOn() : playSound.toggleOff()}
+ * />
+ *
+ * @example
+ * // Success feedback
+ * await saveData();
+ * playSound.success();
+ */
+
 // Get sound category info for documentation
 export function getSoundCategories() {
   return Object.entries(SOUND_CATEGORIES).map(([name, config]) => ({
@@ -108,87 +223,3 @@ export function getSoundCategories() {
     actions: Object.keys(config).filter((k) => k !== "description"),
   }));
 }
-
-// ===================================================================
-// INTEGRATION HELPERS - Common patterns for sound implementation
-// ===================================================================
-
-/**
- * Toggle sound helper - plays appropriate sound based on state
- * @example
- * onClick={() => {
- *   const newState = !currentState;
- *   playToggleSound(newState);
- *   setState(newState);
- * }}
- */
-export function playToggleSound(isOn: boolean) {
-  return isOn ? playSound.toggleOn() : playSound.toggleOff();
-}
-
-/**
- * Selection sound helper - plays sound based on selection state
- * @example
- * onClick={() => {
- *   playSelectionSound(isSelected);
- *   setSelected(!isSelected);
- * }}
- */
-export function playSelectionSound(isSelected: boolean) {
-  return isSelected ? playSound.selectionDeselect() : playSound.selectionSelect();
-}
-
-/**
- * Panel sound helper - plays sound based on expanded state
- * @example
- * onClick={() => {
- *   playPanelSound(isExpanded);
- *   setExpanded(!isExpanded);
- * }}
- */
-export function playPanelSound(isExpanded: boolean) {
-  return isExpanded ? playSound.panelCollapse() : playSound.panelExpand();
-}
-
-// ===================================================================
-// BROWSER TEST UTILITIES
-// ===================================================================
-
-// Test all sounds function for browser console
-export async function testAllSounds() {
-  console.group("🎵 Testing Juicy Sounds System");
-  
-  // List all available sound functions
-  console.log("\n📋 Available sound functions:");
-  listAvailableSounds();
-  
-  // Test each sound with delay
-  const sounds = Object.keys(playSound);
-  for (const soundName of sounds) {
-    try {
-      console.log(`  Playing ${soundName}...`);
-      await playSound[soundName]?.();
-      await new Promise(resolve => setTimeout(resolve, 500)); // Delay between sounds
-    } catch (error) {
-      console.error(`  ❌ Failed to play ${soundName}:`, error);
-    }
-  }
-  
-  console.groupEnd();
-}
-
-// Auto-inject test function in browser environment
-if (typeof window !== "undefined") {
-  (window as any).testJuicySounds = testAllSounds;
-  (window as any).juicySounds = {
-    playSound,
-    listAvailableSounds,
-    getSoundCategories,
-    testAll: testAllSounds
-  };
-  console.log("✨ Juicy Sounds Ready!");
-  console.log("Run 'testJuicySounds()' in console to test all sounds");
-  console.log("Use 'juicySounds.playSound.primaryClick()' to play individual sounds");
-}
-
-export default playSound;
