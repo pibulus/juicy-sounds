@@ -1,10 +1,8 @@
 /**
- * Sound Service for ButtonStudio
+ * Sound Service for Juicy Sounds
  * Adapted from RiffRap's excellent sound system
- * Provides centralized UI sound effects for the application
+ * Provides centralized UI sound effects for web applications
  */
-
-import { toast } from "../../components/Toast.tsx";
 
 // Check if we're in a browser environment with audio support
 const hasAudioSupport = typeof window !== "undefined" &&
@@ -20,7 +18,7 @@ const defaultConfig = {
   basePath: "/sounds/", // Base path to sound files
 };
 
-// Sound file mappings for ButtonStudio UI interactions
+// Sound file mappings for UI interactions
 const soundFiles = {
   // Button interactions
   buttonHover: "scroll-haptic",
@@ -196,10 +194,10 @@ export function setSoundEnabled(enabled: boolean): void {
 
   // Show feedback
   if (enabled) {
-    toast.success("🔊 Sounds enabled!");
+    console.log("🔊 Sounds enabled!");
     buttonStudioSounds.playSuccess();
   } else {
-    toast.info("🔇 Sounds disabled");
+    console.log("🔇 Sounds disabled");
   }
 }
 
