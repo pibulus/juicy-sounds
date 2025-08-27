@@ -4,7 +4,7 @@
  * Modular sound pack loader with manifest-based configuration.
  * Supports automatic format detection, pitch variations, and theming.
  * 
- * @module juice-sounds
+ * @module juicy-sounds
  * @version 1.0.0
  */
 

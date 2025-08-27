@@ -1,10 +1,10 @@
 /**
- * Juice Sounds 🎵
+ * Juicy Sounds 🎵
  * 
  * A delightful sound library for web interfaces that actually feels good.
  * No corporate beeps, just pure audio juice.
  * 
- * @module juice-sounds
+ * @module juicy-sounds
  * @version 1.0.0
  */
 

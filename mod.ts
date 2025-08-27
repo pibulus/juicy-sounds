@@ -1,7 +1,7 @@
 /**
- * Juice Sounds for Deno 🦕
+ * Juicy Sounds for Deno 🦕
  * 
- * @module juice-sounds
+ * @module juicy-sounds
  */
 
 export * from './src/index.ts';

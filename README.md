@@ -42,7 +42,7 @@ import { SoundPackManager } from "https://raw.githubusercontent.com/pibulus/juic
 The simplest thing that could possibly work:
 
 ```javascript
-import { SoundPackManager } from 'juice-sounds';
+import { SoundPackManager } from 'juicy-sounds';
 
 // Create your sound manager
 const sounds = new SoundPackManager();
@@ -143,7 +143,7 @@ Here's how you might use it in a React component:
 
 ```jsx
 import { useEffect, useState } from 'react';
-import { SoundPackManager } from 'juice-sounds';
+import { SoundPackManager } from 'juicy-sounds';
 
 function JuicyButton({ onClick, children }) {
   const [sounds, setSounds] = useState(null);
