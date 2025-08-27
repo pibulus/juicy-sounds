@@ -11,9 +11,13 @@
 // Core exports
 export { SoundPackManager } from './SoundPack.ts';
 export { WebAudioProcessor, PlaybackOptions } from './AudioProcessor.ts';
-export { SoundService } from './soundService.ts';
+export { SoundService, soundService, playCustomSound } from './soundService.ts';
 export * as SynthEngine from './synthEngine.ts';
 export * as HapticService from './hapticService.ts';
+
+// New universal sound system exports
+export { playSound, listAvailableSounds, getSoundCategories, playToggleSound, playSelectionSound, playPanelSound, testAllSounds } from './soundMapping.ts';
+export { SOUND_LIBRARY, SOUND_CATEGORIES, SOUND_MANIFEST, SOUND_THEMES } from './soundConfig.ts';
 
 // Types
 export type {

@@ -27,19 +27,42 @@ npm install juice-sounds
 
 **Deno:**
 ```typescript
-import { SoundPackManager } from "https://raw.githubusercontent.com/pibulus/juice-sounds/main/mod.ts";
+import { playSound } from "https://raw.githubusercontent.com/pibulus/juice-sounds/main/mod.ts";
 ```
 
 **Or just yolo it:**
 ```html
 <script type="module">
-  import { SoundPackManager } from 'https://esm.sh/juice-sounds';
+  import { playSound } from 'https://esm.sh/juice-sounds';
 </script>
 ```
 
-### Use It
+### Use It (NEW Simplified API!)
 
 The simplest thing that could possibly work:
+
+```javascript
+import { playSound } from 'juicy-sounds';
+
+// Just play sounds - no setup required!
+button.onClick = () => playSound.primaryClick();
+button.onMouseEnter = () => playSound.hover();
+
+// Handle toggles with state
+toggle.onChange = (isOn) => {
+  playSound[isOn ? 'toggleOn' : 'toggleOff']();
+};
+
+// Success/error feedback
+try {
+  await saveData();
+  playSound.feedbackSuccess();
+} catch {
+  playSound.feedbackError();
+}
+```
+
+### Or Use the Original Pack System
 
 ```javascript
 import { SoundPackManager } from 'juicy-sounds';
