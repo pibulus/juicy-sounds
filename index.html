@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juicy Sounds 🎵 - Delightful UI Sound Library</title>
-  <meta name="description" content="A delightful sound library for web interfaces. No corporate beeps, just pure audio juice. Zero bundle impact with lazy-loaded sounds.">
+  <title>Juicy Sounds 🍊 - UI sounds that slap</title>
+  <meta name="description" content="UI sounds that actually feel good. No corporate beeps, just pure audio juice. Zero bundle bloat.">
   
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
@@ -18,35 +18,48 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
     :root {
-      --primary: #667eea;
-      --primary-dark: #5a67d8;
-      --secondary: #f56565;
-      --success: #48bb78;
-      --warning: #ed8936;
-      --text: #2d3748;
+      /* Pablo's Pastel Punk Palette */
+      --peach: #FFDAB9;
+      --pink: #FFB6C1;
+      --lavender: #E6E6FA;
+      --mint: #B2FFDB;
+      --butter: #FFF8DC;
+      --pool: #B0E0E6;
+      --coral: #FF6B6B;
+      --sage: #A8D5A8;
+      
+      /* Functional */
+      --text: #2D3748;
       --text-light: #718096;
-      --bg: #f7fafc;
-      --white: #ffffff;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      --border-radius: 12px;
+      --bg: #FAF9F6;
+      --white: #FFFFFF;
+      --black: #000000;
+      
+      /* Neo-brut */
+      --border: 3px solid var(--black);
+      --shadow: 4px 4px 0px var(--black);
+      --border-radius: 8px;
     }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
+      font-family: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+      background: var(--butter);
       color: var(--text);
       line-height: 1.6;
       overflow-x: hidden;
     }
     
-    /* Hero Section */
+    /* Import Space Grotesk */
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+    
+    /* Hero Section - Soft Brutal Style */
     .hero {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, var(--peach) 0%, var(--pink) 50%, var(--lavender) 100%);
+      color: var(--black);
       padding: 4rem 2rem 6rem;
       text-align: center;
       position: relative;
-      overflow: hidden;
+      border-bottom: var(--border);
     }
     
     .hero::before {
@@ -72,11 +85,14 @@
     }
     
     .hero h1 {
-      font-size: 3.5rem;
+      font-size: 4rem;
+      font-weight: 700;
       margin-bottom: 1rem;
       position: relative;
       z-index: 1;
       animation: fadeInUp 0.6s ease;
+      text-shadow: 3px 3px 0px var(--pink);
+      letter-spacing: -2px;
     }
     
     .hero .tagline {
@@ -111,13 +127,17 @@
     }
     
     .btn-primary {
-      background: white;
-      color: var(--primary);
+      background: var(--mint);
+      color: var(--black);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      font-weight: 700;
     }
     
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--black);
+      background: var(--coral);
     }
     
     .btn-secondary {
@@ -496,8 +516,8 @@
 <body>
   <!-- Hero Section -->
   <section class="hero">
-    <h1>Juicy Sounds 🎵</h1>
-    <p class="tagline">Delightful UI sounds that actually feel good. No corporate beeps.</p>
+    <h1>Juicy Sounds 🍊</h1>
+    <p class="tagline">UI sounds that slap. Zero bundle bloat. Pure audio juice.</p>
     <div class="hero-buttons">
       <button class="btn btn-primary" onclick="sounds.play('success')">
         Try Me! 🎉
@@ -704,12 +724,12 @@ panels.forEach((panel, i) => {
   </div>
   
   <!-- Scripts -->
-  <script type="module">
-    import JuicySounds from './src/index.ts';
-    import { TypeWriter } from './src/index.ts';
+  <script src="./lib/juicy-sounds.js"></script>
+  <script>
+    // Use the global classes
     
     // Initialize Juicy Sounds
-    const sounds = new JuicySounds({
+    const sounds = new window.JuicySounds({
       volume: 0.5,
       lazyLoad: true
     });
@@ -743,7 +763,7 @@ panels.forEach((panel, i) => {
     });
     
     // TypeWriter Demo
-    const typewriter = new TypeWriter({
+    const typewriter = new window.TypeWriter({
       style: 'mechanical',
       volume: 0.3,
       pitchVariation: true
