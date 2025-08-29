@@ -16,7 +16,11 @@ class JuicySounds {
       notification: 'glass_001.ogg',
       toggle: 'switch_001.ogg',
       open: 'open_001.ogg',
-      close: 'close_001.ogg'
+      close: 'close_001.ogg',
+      bong: 'bong_001.ogg',
+      glass: 'glass_001.ogg',
+      pluck: 'pluck_001.ogg',
+      select: 'select_001.ogg'
     };
     
     const filename = files[soundName] || soundName;
