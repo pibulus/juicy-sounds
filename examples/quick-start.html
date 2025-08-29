@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juicy Sounds - 30 Second Integration</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        
+        .demo-app {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: white;
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .success {
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+        
+        .success:hover {
+            background: #4caf50;
+        }
+        
+        .danger {
+            border-color: #f44336;
+            color: #f44336;
+        }
+        
+        .danger:hover {
+            background: #f44336;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #ccc;
+            border-radius: 34px;
+            transition: background 0.3s;
+        }
+        
+        .switch.on {
+            background: #667eea;
+        }
+        
+        .switch::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        
+        .switch.on::after {
+            transform: translateX(24px);
+        }
+        
+        .code-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .gradient-demo {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .gradient-box {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .gradient-box:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎵 Juicy Sounds - 30 Second Demo</h1>
+    
+    <div class="demo-app">
+        <h2>Try These Interactive Elements</h2>
+        
+        <!-- Regular buttons -->
+        <button class="primary-btn">Primary Action</button>
+        <button class="success">Save Changes ✅</button>
+        <button class="danger">Delete Item 🗑️</button>
+        
+        <!-- Toggle switch -->
+        <div class="toggle-switch" onclick="toggleSwitch(this)">
+            <span>Enable Notifications</span>
+            <div class="switch" id="switch"></div>
+        </div>
+        
+        <!-- Gradient demo -->
+        <h3 style="margin-top: 20px;">Hover over colors for gradient sounds:</h3>
+        <div class="gradient-demo">
+            <div class="gradient-box" style="background: #ffcdd2;" data-index="0"></div>
+            <div class="gradient-box" style="background: #ffe0b2;" data-index="1"></div>
+            <div class="gradient-box" style="background: #fff9c4;" data-index="2"></div>
+            <div class="gradient-box" style="background: #c8e6c9;" data-index="3"></div>
+            <div class="gradient-box" style="background: #bbdefb;" data-index="4"></div>
+            <div class="gradient-box" style="background: #e1bee7;" data-index="5"></div>
+        </div>
+    </div>
+    
+    <div class="code-section">
+        <h3>The Entire Integration (3 Lines!):</h3>
+        <pre><code>&lt;!-- 1. Import Juicy Sounds --&gt;
+&lt;script type="module"&gt;
+  import JuicySounds from 'juicy-sounds';
+  const sounds = new JuicySounds();
+  
+  // 2. That's it! Add sounds to any element:
+  button.onclick = () => sounds.play('click');
+  button.onmouseenter = () => sounds.play('hover');
+&lt;/script&gt;</code></pre>
+
+        <h3>Or Use Auto-Attach:</h3>
+        <pre><code>// Automatically attach sounds to elements
+sounds.autoAttach({
+  'click': 'button',
+  'hover': 'button, a',
+  'success': '.success-action'
+});</code></pre>
+    </div>
+
+    <script type="module">
+        import JuicySounds from '../src/index.ts';
+        
+        // ONE LINE SETUP!
+        const sounds = new JuicySounds();
+        
+        // Auto-attach sounds to buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mouseenter', () => sounds.play('hover'));
+            btn.addEventListener('click', (e) => {
+                if (e.target.classList.contains('success')) {
+                    sounds.play('success');
+                } else if (e.target.classList.contains('danger')) {
+                    sounds.play('error');
+                } else {
+                    sounds.play('click');
+                }
+            });
+        });
+        
+        // Toggle switch
+        window.toggleSwitch = (element) => {
+            const switchEl = element.querySelector('.switch');
+            const isOn = switchEl.classList.contains('on');
+            
+            if (isOn) {
+                switchEl.classList.remove('on');
+                sounds.play('toggle.off');
+            } else {
+                switchEl.classList.add('on');
+                sounds.play('toggle.on');
+            }
+        };
+        
+        // Gradient boxes
+        document.querySelectorAll('.gradient-box').forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                const index = parseInt(box.dataset.index);
+                sounds.playGradientSound(index, 6);
+            });
+        });
+        
+        console.log('✅ Juicy Sounds loaded! Try hovering and clicking elements.');
+    </script>
+</body>
+</html>

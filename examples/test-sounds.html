@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juicy Sounds Test Page 🎵</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        h2 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 1.3rem;
+        }
+        
+        .sound-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 16px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: white;
+            color: #667eea;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .gradient-section {
+            background: linear-gradient(to right, 
+                #ffcdd2, #ffe0b2, #fff9c4, 
+                #c8e6c9, #bbdefb, #e1bee7);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .gradient-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .gradient-btn {
+            aspect-ratio: 1;
+            border: 2px solid rgba(0,0,0,0.1);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: white;
+        }
+        
+        .gradient-btn.red { background: #ffcdd2; }
+        .gradient-btn.orange { background: #ffe0b2; }
+        .gradient-btn.yellow { background: #fff9c4; }
+        .gradient-btn.green { background: #c8e6c9; }
+        .gradient-btn.blue { background: #bbdefb; }
+        .gradient-btn.purple { background: #e1bee7; }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+            padding: 1rem;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        input[type="range"] {
+            width: 150px;
+        }
+        
+        .status {
+            padding: 0.5rem 1rem;
+            background: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+            color: #2e7d32;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .scale-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .scale-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            background: #f0f0f0;
+            border-color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Juicy Sounds Test Page</h1>
+        <p class="subtitle">Test all sounds and gradient tones</p>
+        
+        <div class="controls">
+            <div class="volume-control">
+                <label>Volume:</label>
+                <input type="range" id="volume" min="0" max="100" value="50">
+                <span id="volumeValue">50%</span>
+            </div>
+            <button onclick="sounds.mute()">🔇 Mute</button>
+            <button onclick="sounds.unmute()">🔊 Unmute</button>
+            <div class="status" id="status">Ready to play!</div>
+        </div>
+
+        <div class="section">
+            <h2>🖱️ Basic Interactions</h2>
+            <div class="sound-grid">
+                <button onmouseenter="playHoverSound()" onclick="sounds.play('click')">Click</button>
+                <button onmouseenter="playHoverSound()" onclick="sounds.playRandomClick()">Random Click</button>
+                <button onmouseenter="playHoverSound()" onclick="sounds.play('hover')">Hover</button>
+                <button onmouseenter="playHoverSound()" onclick="sounds.play('success')">Success ✅</button>
+                <button onmouseenter="playHoverSound()" onclick="sounds.play('error')">Error ❌</button>
+                <button onmouseenter="playHoverSound()" onclick="sounds.play('notification')">Notification 🔔</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎚️ Toggles & Panels</h2>
+            <div class="sound-grid">
+                <button onclick="sounds.play('toggle.on')">Toggle On</button>
+                <button onclick="sounds.play('toggle.off')">Toggle Off</button>
+                <button onclick="sounds.play('panel.open')">Panel Open</button>
+                <button onclick="sounds.play('panel.close')">Panel Close</button>
+                <button onclick="sounds.play('navigation.back')">Back</button>
+                <button onclick="sounds.play('navigation.forward')">Forward</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✨ Special Sounds</h2>
+            <div class="sound-grid">
+                <button onclick="sounds.play('special.pluck')">Pluck</button>
+                <button onclick="sounds.play('special.bong')">Bong</button>
+            </div>
+        </div>
+
+        <div class="gradient-section">
+            <h2 style="color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                🎹 Gradient Tones (Synthetic)
+            </h2>
+            <div class="gradient-grid">
+                <button class="gradient-btn red" onmouseenter="sounds.playGradientSound(0, 6)">
+                    Red<br>C4
+                </button>
+                <button class="gradient-btn orange" onmouseenter="sounds.playGradientSound(1, 6)">
+                    Orange<br>D4
+                </button>
+                <button class="gradient-btn yellow" onmouseenter="sounds.playGradientSound(2, 6)">
+                    Yellow<br>E4
+                </button>
+                <button class="gradient-btn green" onmouseenter="sounds.playGradientSound(3, 6)">
+                    Green<br>G4
+                </button>
+                <button class="gradient-btn blue" onmouseenter="sounds.playGradientSound(4, 6)">
+                    Blue<br>A4
+                </button>
+                <button class="gradient-btn purple" onmouseenter="sounds.playGradientSound(5, 6)">
+                    Purple<br>B4
+                </button>
+            </div>
+            
+            <div class="scale-buttons">
+                <button class="scale-btn" onclick="playScale('major')">🎼 Major Scale</button>
+                <button class="scale-btn" onclick="playScale('minor')">🎵 Minor Scale</button>
+                <button class="scale-btn" onclick="playScale('pentatonic')">🎸 Pentatonic</button>
+                <button class="scale-btn" onclick="playScale('chromatic')">🎹 Chromatic</button>
+                <button class="scale-btn" onclick="playScale('octaves')">🎺 Octaves</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Sound Pack Info</h2>
+            <pre id="info" style="background: white; padding: 1rem; border-radius: 8px; overflow: auto;"></pre>
+        </div>
+    </div>
+
+    <script type="module">
+        import JuicySounds from '../src/index.ts';
+        
+        // Initialize with local files for testing
+        const sounds = new JuicySounds({
+            lazyLoad: true,
+            cdn: false, // Use local files for testing
+            basePath: '../sounds',
+            volume: 0.5
+        });
+        
+        // Make it globally accessible
+        window.sounds = sounds;
+        
+        // Volume control
+        const volumeSlider = document.getElementById('volume');
+        const volumeValue = document.getElementById('volumeValue');
+        
+        volumeSlider.addEventListener('input', (e) => {
+            const volume = e.target.value / 100;
+            sounds.setVolume(volume);
+            volumeValue.textContent = e.target.value + '%';
+        });
+        
+        // Hover sound helper
+        window.playHoverSound = () => {
+            sounds.play('hover');
+        };
+        
+        // Play scales
+        window.playScale = (scale) => {
+            sounds.setGradientScale(scale);
+            // Play ascending scale
+            for (let i = 0; i < 6; i++) {
+                setTimeout(() => {
+                    sounds.playGradientSound(i, 6);
+                }, i * 150);
+            }
+        };
+        
+        // Update status
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+        
+        // Display sound pack info
+        const info = sounds.getStats();
+        if (info) {
+            document.getElementById('info').textContent = JSON.stringify(info, null, 2);
+        }
+        
+        // Initial status
+        updateStatus('Ready! Sounds will lazy-load on first play.');
+        
+        // Log to console for debugging
+        console.log('🎵 Juicy Sounds initialized:', sounds);
+        console.log('📦 Stats:', info);
+    </script>
+</body>
+</html>
