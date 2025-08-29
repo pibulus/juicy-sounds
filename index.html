@@ -671,18 +671,21 @@ sounds.play('success')  // that's it</pre>
     
     <!-- Scripts -->
     <script type="module">
-      // Import the optimized version
-      import JuicySounds from './dist/juicy-sounds-final.js';
+      // Import the simple working version
+      import JuicySounds from './dist/juicy-simple.js';
       
       // Initialize
       const sounds = new JuicySounds({
         volume: 0.7,
-        basePath: './sounds/interface/',
-        pack: 'interface'
+        basePath: './sounds/interface/'
       });
+      
+      // Debug - log to console
+      console.log('JuicySounds loaded:', sounds);
       
       // Try button
       document.getElementById('tryButton').addEventListener('click', () => {
+        console.log('Button clicked, playing success sound...');
         sounds.play('success');
       });
       

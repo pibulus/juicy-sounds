@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Sound Test</title>
+</head>
+<body>
+  <h1>Direct Sound Test</h1>
+  <button onclick="testDirect()">Test Direct Audio</button>
+  <button onclick="testPath()">Test with Path</button>
+  <div id="result"></div>
+  
+  <script>
+    function testDirect() {
+      const audio = new Audio('./sounds/interface/click_001.ogg');
+      audio.play().then(() => {
+        document.getElementById('result').textContent = '✅ Direct audio works!';
+      }).catch(e => {
+        document.getElementById('result').textContent = '❌ Error: ' + e.message;
+      });
+    }
+    
+    function testPath() {
+      // Test if the path is correct
+      fetch('./sounds/interface/click_001.ogg')
+        .then(r => {
+          if (r.ok) {
+            document.getElementById('result').textContent = '✅ File exists at path!';
+          } else {
+            document.getElementById('result').textContent = '❌ File not found: ' + r.status;
+          }
+        })
+        .catch(e => {
+          document.getElementById('result').textContent = '❌ Fetch error: ' + e.message;
+        });
+    }
+  </script>
+</body>
+</html>
