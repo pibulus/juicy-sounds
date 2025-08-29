@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juicy Sounds 🎵 - Delightful UI Sound Library</title>
+  <meta name="description" content="A delightful sound library for web interfaces. No corporate beeps, just pure audio juice. Zero bundle impact with lazy-loaded sounds.">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Juicy Sounds - Delightful UI Sound Library">
+  <meta property="og:description" content="Add satisfying sounds to your web app in 30 seconds. TypeWriter sounds, synthetic gradients, and more!">
+  <meta property="og:image" content="https://pibulus.github.io/juicy-sounds/og-image.png">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #667eea;
+      --primary-dark: #5a67d8;
+      --secondary: #f56565;
+      --success: #48bb78;
+      --warning: #ed8936;
+      --text: #2d3748;
+      --text-light: #718096;
+      --bg: #f7fafc;
+      --white: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      --border-radius: 12px;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4rem 2rem 6rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        60deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 255, 255, 0.03) 10px,
+        rgba(255, 255, 255, 0.03) 20px
+      );
+      animation: slide 20s linear infinite;
+    }
+    
+    @keyframes slide {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(50px); }
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 0.6s ease;
+    }
+    
+    .hero .tagline {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 0.8s ease;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1s ease;
+    }
+    
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-primary {
+      background: white;
+      color: var(--primary);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+    
+    .btn-secondary:hover {
+      background: white;
+      color: var(--primary);
+    }
+    
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    /* Interactive Demo Section */
+    .demo-section {
+      padding: 4rem 0;
+      background: white;
+    }
+    
+    .demo-section h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+    
+    .sound-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    
+    .sound-btn {
+      padding: 1.5rem;
+      background: var(--white);
+      border: 2px solid #e2e8f0;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .sound-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    
+    .sound-btn:active {
+      transform: translateY(0);
+    }
+    
+    .sound-btn .emoji {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    
+    .sound-btn .label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(102, 126, 234, 0.3);
+      transform: scale(0);
+      animation: ripple 0.6s ease-out;
+      pointer-events: none;
+    }
+    
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+    
+    /* TypeWriter Demo */
+    .typewriter-section {
+      padding: 4rem 0;
+      background: var(--bg);
+    }
+    
+    .typewriter-demo {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .typewriter-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .style-toggle {
+      padding: 0.5rem 1rem;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .style-toggle.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .typing-area {
+      margin-top: 2rem;
+    }
+    
+    .typing-area input,
+    .typing-area textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+      transition: all 0.2s;
+    }
+    
+    .typing-area input:focus,
+    .typing-area textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .typing-area textarea {
+      min-height: 150px;
+      resize: vertical;
+      margin-top: 1rem;
+    }
+    
+    /* Gradient Demo */
+    .gradient-section {
+      padding: 4rem 0;
+      background: white;
+    }
+    
+    .gradient-demo {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .gradient-panels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .gradient-panel {
+      aspect-ratio: 1;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      font-weight: bold;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .gradient-panel:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow);
+    }
+    
+    .gradient-panel:nth-child(1) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .gradient-panel:nth-child(2) { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+    .gradient-panel:nth-child(3) { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+    .gradient-panel:nth-child(4) { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+    .gradient-panel:nth-child(5) { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .gradient-panel:nth-child(6) { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+    
+    .scale-selector {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    
+    .scale-btn {
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .scale-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    /* Code Examples */
+    .code-section {
+      padding: 4rem 0;
+      background: var(--bg);
+    }
+    
+    .code-examples {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    
+    .code-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    }
+    
+    .code-card h3 {
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+    
+    pre {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    code {
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    }
+    
+    /* Features */
+    .features-section {
+      padding: 4rem 0;
+      background: white;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    
+    .feature-card {
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .feature-card h3 {
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    
+    .feature-card p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--text);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+    }
+    
+    footer a {
+      color: white;
+      text-decoration: none;
+      margin: 0 1rem;
+      transition: opacity 0.2s;
+    }
+    
+    footer a:hover {
+      opacity: 0.8;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .sound-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
+    }
+    
+    /* Volume Control */
+    .volume-control {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: white;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+    }
+    
+    .volume-slider {
+      width: 150px;
+    }
+    
+    /* Loading State */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(102, 126, 234, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Juicy Sounds 🎵</h1>
+    <p class="tagline">Delightful UI sounds that actually feel good. No corporate beeps.</p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="sounds.play('success')">
+        Try Me! 🎉
+      </button>
+      <a href="https://github.com/pibulus/juicy-sounds" class="btn btn-secondary">
+        View on GitHub
+      </a>
+    </div>
+  </section>
+  
+  <!-- Interactive Sound Demo -->
+  <section class="demo-section">
+    <div class="container">
+      <h2>Try All Sounds 🎮</h2>
+      <div class="sound-grid">
+        <button class="sound-btn" data-sound="click">
+          <span class="emoji">🖱️</span>
+          <span class="label">Click</span>
+        </button>
+        <button class="sound-btn" data-sound="hover">
+          <span class="emoji">👆</span>
+          <span class="label">Hover</span>
+        </button>
+        <button class="sound-btn" data-sound="success">
+          <span class="emoji">✅</span>
+          <span class="label">Success</span>
+        </button>
+        <button class="sound-btn" data-sound="error">
+          <span class="emoji">❌</span>
+          <span class="label">Error</span>
+        </button>
+        <button class="sound-btn" data-sound="toggle.on">
+          <span class="emoji">🔛</span>
+          <span class="label">Toggle On</span>
+        </button>
+        <button class="sound-btn" data-sound="toggle.off">
+          <span class="emoji">📴</span>
+          <span class="label">Toggle Off</span>
+        </button>
+        <button class="sound-btn" data-sound="notification">
+          <span class="emoji">🔔</span>
+          <span class="label">Notification</span>
+        </button>
+        <button class="sound-btn" data-sound="panel.open">
+          <span class="emoji">📂</span>
+          <span class="label">Panel Open</span>
+        </button>
+        <button class="sound-btn" data-sound="panel.close">
+          <span class="emoji">📁</span>
+          <span class="label">Panel Close</span>
+        </button>
+        <button class="sound-btn" data-sound="pluck">
+          <span class="emoji">🎸</span>
+          <span class="label">Pluck</span>
+        </button>
+        <button class="sound-btn" data-sound="bong">
+          <span class="emoji">🔨</span>
+          <span class="label">Bong</span>
+        </button>
+        <button class="sound-btn" data-sound="back">
+          <span class="emoji">⬅️</span>
+          <span class="label">Back</span>
+        </button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- TypeWriter Demo -->
+  <section class="typewriter-section">
+    <div class="container">
+      <h2>TypeWriter Sounds ⌨️</h2>
+      <div class="typewriter-demo">
+        <div class="typewriter-controls">
+          <button class="style-toggle active" data-style="mechanical">🔧 Mechanical</button>
+          <button class="style-toggle" data-style="soft">🤫 Soft</button>
+          <button class="style-toggle" data-style="vintage">📜 Vintage</button>
+        </div>
+        <div class="typing-area">
+          <input type="text" placeholder="Start typing to hear satisfying keyboard sounds..." />
+          <textarea placeholder="Or write something longer here. Each key has its own sound - try space, enter, and backspace!"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Gradient Sounds Demo -->
+  <section class="gradient-section">
+    <div class="container">
+      <h2>Gradient Sounds 🎹</h2>
+      <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">
+        Synthetically generated tones - perfect pitch control guaranteed!
+      </p>
+      <div class="gradient-demo">
+        <div class="gradient-panels">
+          <div class="gradient-panel" data-index="0">C</div>
+          <div class="gradient-panel" data-index="1">D</div>
+          <div class="gradient-panel" data-index="2">E</div>
+          <div class="gradient-panel" data-index="3">G</div>
+          <div class="gradient-panel" data-index="4">A</div>
+          <div class="gradient-panel" data-index="5">C</div>
+        </div>
+        <div class="scale-selector">
+          <button class="scale-btn active" data-scale="major">Major</button>
+          <button class="scale-btn" data-scale="pentatonic">Pentatonic</button>
+          <button class="scale-btn" data-scale="minor">Minor</button>
+          <button class="scale-btn" data-scale="blues">Blues</button>
+          <button class="scale-btn" data-scale="mixolydian">Mixolydian</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Code Examples -->
+  <section class="code-section">
+    <div class="container">
+      <h2>Quick Integration 🚀</h2>
+      <div class="code-examples">
+        <div class="code-card">
+          <h3>30-Second Setup</h3>
+          <pre><code>import JuicySounds from 'juicy-sounds';
+const sounds = new JuicySounds();
+
+button.onclick = () => sounds.play('click');
+button.onmouseenter = () => sounds.play('hover');</code></pre>
+        </div>
+        <div class="code-card">
+          <h3>TypeWriter</h3>
+          <pre><code>import { TypeWriter } from 'juicy-sounds';
+
+const typewriter = new TypeWriter({
+  style: 'mechanical',
+  volume: 0.3
+});
+
+typewriter.attach('input, textarea');</code></pre>
+        </div>
+        <div class="code-card">
+          <h3>Gradient Sounds</h3>
+          <pre><code>// Musical UI feedback
+panels.forEach((panel, i) => {
+  panel.onmouseenter = () => 
+    sounds.playGradientSound(i, panels.length);
+});</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Features -->
+  <section class="features-section">
+    <div class="container">
+      <h2>Why Juicy Sounds?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📦</div>
+          <h3>Zero Bundle Impact</h3>
+          <p>Sounds lazy-load from CDN on first play. Your bundle stays tiny.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎵</div>
+          <h3>24 Essential Sounds</h3>
+          <p>Carefully curated UI sounds that actually sound good together.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎹</div>
+          <h3>Synthetic Gradients</h3>
+          <p>Web Audio API synthesis for perfect pitch control.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⌨️</div>
+          <h3>TypeWriter Sounds</h3>
+          <p>Mechanical keyboard simulator with multiple styles.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>Smart Defaults</h3>
+          <p>Pre-configured volumes for each sound type.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>Works Everywhere</h3>
+          <p>iOS, Android, all browsers. Handles autoplay policies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>Built with 🧃 in Bangkok by Pablo</p>
+      <div style="margin-top: 1rem;">
+        <a href="https://github.com/pibulus/juicy-sounds">GitHub</a>
+        <a href="https://www.npmjs.com/package/juicy-sounds">NPM</a>
+        <a href="https://github.com/pibulus/juicy-sounds/releases">Releases</a>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- Volume Control -->
+  <div class="volume-control">
+    <label>Volume: <span id="volume-value">50%</span></label>
+    <input type="range" class="volume-slider" min="0" max="100" value="50" id="global-volume">
+  </div>
+  
+  <!-- Scripts -->
+  <script type="module">
+    import JuicySounds from './src/index.ts';
+    import { TypeWriter } from './src/index.ts';
+    
+    // Initialize Juicy Sounds
+    const sounds = new JuicySounds({
+      volume: 0.5,
+      lazyLoad: true
+    });
+    
+    // Make it global for onclick handlers
+    window.sounds = sounds;
+    
+    // Sound buttons with ripple effect
+    document.querySelectorAll('.sound-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const sound = this.dataset.sound;
+        sounds.play(sound);
+        
+        // Create ripple effect
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        this.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+      });
+      
+      // Add hover sound
+      btn.addEventListener('mouseenter', () => {
+        sounds.play('hover', { volume: 0.1 });
+      });
+    });
+    
+    // TypeWriter Demo
+    const typewriter = new TypeWriter({
+      style: 'mechanical',
+      volume: 0.3,
+      pitchVariation: true
+    });
+    
+    typewriter.attach('.typing-area input, .typing-area textarea');
+    
+    // Style toggles
+    document.querySelectorAll('.style-toggle').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.style-toggle').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        typewriter.setStyle(this.dataset.style);
+        sounds.play('toggle.on');
+      });
+    });
+    
+    // Gradient Panels
+    const panels = document.querySelectorAll('.gradient-panel');
+    panels.forEach(panel => {
+      panel.addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        sounds.playGradientSound(index, panels.length);
+        
+        // Visual feedback
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 100);
+      });
+      
+      panel.addEventListener('mouseenter', function() {
+        const index = parseInt(this.dataset.index);
+        sounds.playGradientSound(index, panels.length, { volume: 0.3 });
+      });
+    });
+    
+    // Scale selector
+    document.querySelectorAll('.scale-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const scale = this.dataset.scale;
+        sounds.setGradientScale(scale, 'C');
+        sounds.play('toggle.on');
+        
+        // Update panel labels
+        const noteMap = {
+          major: ['C', 'D', 'E', 'F', 'G', 'A'],
+          pentatonic: ['C', 'D', 'E', 'G', 'A', 'C'],
+          minor: ['C', 'D', 'E♭', 'F', 'G', 'A♭'],
+          blues: ['C', 'E♭', 'F', 'F#', 'G', 'B♭'],
+          mixolydian: ['C', 'D', 'E', 'F', 'G', 'A']
+        };
+        
+        panels.forEach((panel, i) => {
+          panel.textContent = noteMap[scale][i] || '';
+        });
+      });
+    });
+    
+    // Global volume control
+    const volumeSlider = document.getElementById('global-volume');
+    const volumeValue = document.getElementById('volume-value');
+    
+    volumeSlider.addEventListener('input', function() {
+      const volume = this.value / 100;
+      sounds.setVolume(volume);
+      volumeValue.textContent = this.value + '%';
+    });
+    
+    // Add some polish
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => sounds.play('hover', { volume: 0.05 }));
+      btn.addEventListener('click', () => sounds.play('click'));
+    });
+    
+    // Animate hero on load
+    window.addEventListener('load', () => {
+      setTimeout(() => sounds.play('success', { volume: 0.3 }), 500);
+    });
+  </script>
+</body>
+</html>
