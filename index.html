@@ -420,6 +420,19 @@
         box-shadow: none;
       }
       
+      /* Gradient colors */
+      .gradient-low {
+        background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+      }
+      
+      .gradient-mid {
+        background: linear-gradient(135deg, #667EEA, #764BA2);
+      }
+      
+      .gradient-high {
+        background: linear-gradient(135deg, #F093FB, #F5576C);
+      }
+      
       /* Code Examples - tighter */
       .code-section {
         margin-bottom: 2.5rem;
@@ -457,6 +470,34 @@
         padding: 1.5rem;
         overflow-x: auto;
         box-shadow: var(--shadow);
+        position: relative;
+      }
+      
+      .code-copy {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--cream);
+        color: var(--text);
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        opacity: 0.7;
+      }
+      
+      .code-copy:hover {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      
+      .code-copy.copied {
+        background: var(--mint);
+        color: var(--black);
       }
       
       pre {
@@ -480,6 +521,26 @@
         gap: 0.75rem;
         box-shadow: var(--shadow-small);
         z-index: 100;
+      }
+      
+      .volume-feedback {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--black);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: none;
+      }
+      
+      .volume-feedback.show {
+        opacity: 1;
       }
       
       .volume-slider {
@@ -506,8 +567,11 @@
       /* Footer */
       footer {
         text-align: center;
-        padding: 3rem 0 2rem;
+        padding: 4rem 0 2rem;
         color: var(--text-light);
+        margin-top: 4rem;
+        border-top: var(--border);
+        background: linear-gradient(to bottom, transparent, var(--butter));
       }
       
       .footer-links {
@@ -523,21 +587,33 @@
         font-weight: 500;
         transition: all 0.15s;
         position: relative;
+        padding: 0.5rem 1rem;
+        border-radius: 100px;
       }
       
-      .footer-links a::after {
-        content: '';
-        position: absolute;
-        bottom: -3px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: var(--coral);
-        transition: width 0.2s;
+      .footer-links a:hover {
+        background: var(--mint);
+        transform: translateY(-2px);
       }
       
-      .footer-links a:hover::after {
-        width: 100%;
+      .github-stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 0.5rem 1rem;
+        background: var(--black);
+        color: white;
+        text-decoration: none;
+        border-radius: 100px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
+      
+      .github-stars:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       }
       
       /* Responsive */
@@ -592,13 +668,13 @@
             <div class="gradient-demo" style="padding: 1.5rem;">
               <p style="margin-bottom: 1rem; font-size: 0.9rem; text-align: center;">gradient tones →</p>
               <div class="gradient-buttons">
-                <button class="gradient-button" onclick="playTone(220)" onmouseenter="playTone(220, 50)" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53);">
+                <button class="gradient-button gradient-low" onclick="playTone(220)" onmouseenter="playTone(220, 50)">
                   <span>low</span>
                 </button>
-                <button class="gradient-button" onclick="playTone(440)" onmouseenter="playTone(440, 50)" style="background: linear-gradient(135deg, #667EEA, #764BA2);">
+                <button class="gradient-button gradient-mid" onclick="playTone(440)" onmouseenter="playTone(440, 50)">
                   <span>mid</span>
                 </button>
-                <button class="gradient-button" onclick="playTone(880)" onmouseenter="playTone(880, 50)" style="background: linear-gradient(135deg, #F093FB, #F5576C);">
+                <button class="gradient-button gradient-high" onclick="playTone(880)" onmouseenter="playTone(880, 50)">
                   <span>high</span>
                 </button>
               </div>
@@ -647,6 +723,7 @@
           <button class="code-tab" onclick="showTab('cdn')">cdn</button>
         </div>
         <div class="code-content">
+          <button class="code-copy" onclick="copyCode()">copy</button>
           <pre id="codeExample">npm install juicy-sounds
 
 import JuicySounds from 'juicy-sounds'
@@ -658,18 +735,22 @@ sounds.play('success')  // that's it</pre>
       
       <footer>
         <div class="footer-links">
-          <a href="https://github.com/pibulus/juicy-sounds">github</a>
-          <a href="https://npmjs.com/package/juicy-sounds">npm</a>
-          <a href="#docs">docs</a>
+          <a href="https://github.com/pibulus/juicy-sounds" target="_blank">github</a>
+          <a href="https://www.npmjs.com/package/juicy-sounds" target="_blank">npm</a>
+          <a href="https://codepen.io/pen?template=juicy-sounds" target="_blank">try it</a>
         </div>
+        <a href="https://github.com/pibulus/juicy-sounds" target="_blank" class="github-stars">
+          ⭐ star on github
+        </a>
         <p>made with chaos & care by pablo</p>
       </footer>
     </div>
     
     <!-- Volume Control -->
     <div class="volume-control">
+      <span class="volume-feedback" id="volumeFeedback">70%</span>
       <span>🔊</span>
-      <input type="range" class="volume-slider" min="0" max="100" value="70" id="volumeSlider" onchange="setVolume(this.value)">
+      <input type="range" class="volume-slider" min="0" max="100" value="70" id="volumeSlider" oninput="setVolume(this.value)">
     </div>
     
     <!-- Scripts -->
@@ -705,6 +786,25 @@ sounds.play('success')  // that's it</pre>
       
       window.setVolume = (val) => {
         window.sounds.setVolume(val / 100);
+        // Show volume feedback
+        const feedback = document.getElementById('volumeFeedback');
+        feedback.textContent = val + '%';
+        feedback.classList.add('show');
+        setTimeout(() => feedback.classList.remove('show'), 1000);
+      };
+      
+      window.copyCode = () => {
+        const code = document.getElementById('codeExample').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+          const btn = event.target;
+          btn.textContent = 'copied!';
+          btn.classList.add('copied');
+          window.sounds.play('success');
+          setTimeout(() => {
+            btn.textContent = 'copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
       };
       
       // Create sound grid
