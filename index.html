@@ -223,9 +223,12 @@
       
       .sound-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 0.75rem;
         margin-top: 1.5rem;
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
       }
       
       .sound-button {
@@ -548,7 +551,7 @@
         }
         
         .sound-grid {
-          grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+          grid-template-columns: repeat(3, 1fr);
         }
       }
     </style>
@@ -581,7 +584,7 @@
               <li>typewriter engine</li>
               <li>lazy loads on demand</li>
             </ul>
-            <button class="try-button" onclick="playDemoSound()">
+            <button class="try-button" onclick="playDemoSequence()">
               feel the juice 🎵
             </button>
           </div>
@@ -589,13 +592,13 @@
             <div class="gradient-demo" style="padding: 1.5rem;">
               <p style="margin-bottom: 1rem; font-size: 0.9rem; text-align: center;">gradient tones →</p>
               <div class="gradient-buttons">
-                <button class="gradient-button" onclick="playTone(220)" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53);">
+                <button class="gradient-button" onclick="playTone(220)" onmouseenter="playTone(220, 50)" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53);">
                   <span>low</span>
                 </button>
-                <button class="gradient-button" onclick="playTone(440)" style="background: linear-gradient(135deg, #667EEA, #764BA2);">
+                <button class="gradient-button" onclick="playTone(440)" onmouseenter="playTone(440, 50)" style="background: linear-gradient(135deg, #667EEA, #764BA2);">
                   <span>mid</span>
                 </button>
-                <button class="gradient-button" onclick="playTone(880)" style="background: linear-gradient(135deg, #F093FB, #F5576C);">
+                <button class="gradient-button" onclick="playTone(880)" onmouseenter="playTone(880, 50)" style="background: linear-gradient(135deg, #F093FB, #F5576C);">
                   <span>high</span>
                 </button>
               </div>
@@ -687,8 +690,17 @@ sounds.play('success')  // that's it</pre>
         window.sounds.play('success');
       };
       
-      window.playTone = (freq) => {
-        window.sounds.playTone(freq, 200);
+      window.playDemoSequence = () => {
+        // Play a fun sequence of sounds
+        window.sounds.play('click');
+        setTimeout(() => window.sounds.play('success'), 200);
+        setTimeout(() => window.sounds.playTone(440, 100), 400);
+        setTimeout(() => window.sounds.playTone(550, 100), 500);
+        setTimeout(() => window.sounds.playTone(660, 150), 600);
+      };
+      
+      window.playTone = (freq, duration = 200) => {
+        window.sounds.playTone(freq, duration);
       };
       
       window.setVolume = (val) => {
@@ -731,7 +743,7 @@ sounds.play('success')  // that's it</pre>
         );
         event.target.classList.add('active');
         
-        // Restart typewriter
+        // Start typewriter on button click
         startTypewriter();
       };
       
@@ -783,8 +795,7 @@ sounds.play('pop')  // ship it`,
         event.target.classList.add('active');
       };
       
-      // Start typewriter after 1 second
-      setTimeout(startTypewriter, 1000);
+      // Don't auto-start typewriter - wait for user to click a style button
     </script>
   </body>
 </html>
