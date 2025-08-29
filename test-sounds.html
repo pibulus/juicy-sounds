@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sound Test</title>
+</head>
+<body>
+  <h1>Test Sounds</h1>
+  <button onclick="playSound()">Test Click Sound</button>
+  
+  <script>
+    function playSound() {
+      const audio = new Audio('./sounds/interface/click_001.ogg');
+      audio.play().then(() => {
+        console.log('Sound played!');
+      }).catch(e => {
+        console.error('Error:', e);
+        // Try mp3 fallback
+        const audio2 = new Audio('./sounds/pop-on.mp3');
+        audio2.play();
+      });
+    }
+  </script>
+</body>
+</html>

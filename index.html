@@ -671,14 +671,14 @@ sounds.play('success')  // that's it</pre>
     
     <!-- Scripts -->
     <script type="module">
-      // Import the bundled version
-      import JuicySounds from './dist/juicy-sounds.js';
+      // Import the browser-ready version
+      import JuicySounds from './dist/juicy-sounds-browser.js';
       
       // Initialize
       const sounds = new JuicySounds({
         volume: 0.7,
-        basePath: './sounds/',
-        soundpack: 'kenney'
+        basePath: './sounds/interface/',
+        pack: 'interface'
       });
       
       // Try button
@@ -686,15 +686,13 @@ sounds.play('success')  // that's it</pre>
         sounds.play('success');
       });
       
-      // Populate sound grid with cleaner names
+      // Populate sound grid with actual available sounds
       const soundGrid = document.getElementById('soundGrid');
       const soundNames = [
-        'success', 'error', 'click', 'hover',
-        'notification', 'powerUp', 'powerDown', 'coin',
-        'jump', 'land', 'swoosh', 'pop',
-        'achievement', 'levelUp', 'select', 'cancel',
-        'open', 'close', 'send', 'receive',
-        'message', 'warning', 'info', 'question'
+        'click', 'hover', 'success', 'error',
+        'notification', 'toggle', 'panel', 'back',
+        'bong', 'glass', 'pluck', 'select',
+        'switch', 'open', 'close', 'confirmation'
       ];
       
       soundNames.forEach(sound => {
