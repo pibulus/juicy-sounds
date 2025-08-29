@@ -581,7 +581,7 @@
               <li>typewriter engine</li>
               <li>lazy loads on demand</li>
             </ul>
-            <button class="try-button" id="tryButton">
+            <button class="try-button" onclick="playDemoSound()">
               feel the juice 🎵
             </button>
           </div>
@@ -589,13 +589,13 @@
             <div class="gradient-demo" style="padding: 1.5rem;">
               <p style="margin-bottom: 1rem; font-size: 0.9rem; text-align: center;">gradient tones →</p>
               <div class="gradient-buttons">
-                <button class="gradient-button" data-freq="220" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53);">
+                <button class="gradient-button" onclick="playTone(220)" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53);">
                   <span>low</span>
                 </button>
-                <button class="gradient-button" data-freq="440" style="background: linear-gradient(135deg, #667EEA, #764BA2);">
+                <button class="gradient-button" onclick="playTone(440)" style="background: linear-gradient(135deg, #667EEA, #764BA2);">
                   <span>mid</span>
                 </button>
-                <button class="gradient-button" data-freq="880" style="background: linear-gradient(135deg, #F093FB, #F5576C);">
+                <button class="gradient-button" onclick="playTone(880)" style="background: linear-gradient(135deg, #F093FB, #F5576C);">
                   <span>high</span>
                 </button>
               </div>
@@ -626,9 +626,9 @@
           <span class="typewriter-cursor"></span>
         </div>
         <div class="typewriter-controls">
-          <button class="style-button active" data-style="mechanical">mechanical</button>
-          <button class="style-button" data-style="soft">soft touch</button>
-          <button class="style-button" data-style="vintage">vintage</button>
+          <button class="style-button active" onclick="switchStyle('mechanical')">mechanical</button>
+          <button class="style-button" onclick="switchStyle('soft')">soft touch</button>
+          <button class="style-button" onclick="switchStyle('vintage')">vintage</button>
         </div>
       </section>
       
@@ -639,9 +639,9 @@
           <p>one import. done.</p>
         </div>
         <div class="code-tabs">
-          <button class="code-tab active" data-tab="npm">npm</button>
-          <button class="code-tab" data-tab="deno">deno</button>
-          <button class="code-tab" data-tab="cdn">cdn</button>
+          <button class="code-tab active" onclick="showTab('npm')">npm</button>
+          <button class="code-tab" onclick="showTab('deno')">deno</button>
+          <button class="code-tab" onclick="showTab('cdn')">cdn</button>
         </div>
         <div class="code-content">
           <pre id="codeExample">npm install juicy-sounds
@@ -666,105 +666,94 @@ sounds.play('success')  // that's it</pre>
     <!-- Volume Control -->
     <div class="volume-control">
       <span>🔊</span>
-      <input type="range" class="volume-slider" min="0" max="100" value="70" id="volumeSlider">
+      <input type="range" class="volume-slider" min="0" max="100" value="70" id="volumeSlider" onchange="setVolume(this.value)">
     </div>
     
     <!-- Scripts -->
     <script type="module">
-      // Import the simple working version
+      // Import working library
       import JuicySounds from './dist/juicy-simple.js';
       
-      // Initialize
-      const sounds = new JuicySounds({
+      // Initialize globally
+      window.sounds = new JuicySounds({
         volume: 0.7,
         basePath: './sounds/interface/'
       });
       
-      // Debug - log to console
-      console.log('JuicySounds loaded:', sounds);
+      console.log('JuicySounds loaded!');
       
-      // Try button
-      document.getElementById('tryButton').addEventListener('click', () => {
-        console.log('Button clicked, playing success sound...');
-        sounds.play('success');
-      });
+      // Global functions for onclick handlers
+      window.playDemoSound = () => {
+        window.sounds.play('success');
+      };
       
-      // Populate sound grid with actual available sounds
+      window.playTone = (freq) => {
+        window.sounds.playTone(freq, 200);
+      };
+      
+      window.setVolume = (val) => {
+        window.sounds.setVolume(val / 100);
+      };
+      
+      // Create sound grid
       const soundGrid = document.getElementById('soundGrid');
       const soundNames = [
         'click', 'hover', 'success', 'error',
-        'notification', 'toggle', 'panel', 'back',
-        'bong', 'glass', 'pluck', 'select',
-        'switch', 'open', 'close', 'confirmation'
+        'notification', 'toggle', 'open', 'close',
+        'bong', 'glass', 'pluck', 'select'
       ];
       
       soundNames.forEach(sound => {
         const button = document.createElement('button');
         button.className = 'sound-button';
         button.innerHTML = `<span class="sound-name">${sound}</span>`;
-        button.addEventListener('click', () => {
-          // Remove playing class from all buttons
-          document.querySelectorAll('.sound-button').forEach(b => b.classList.remove('playing'));
+        button.onclick = () => {
+          // Remove playing class from all
+          document.querySelectorAll('.sound-button').forEach(b => 
+            b.classList.remove('playing')
+          );
           button.classList.add('playing');
-          sounds.play(sound);
+          window.sounds.play(sound);
           setTimeout(() => button.classList.remove('playing'), 300);
-        });
+        };
         soundGrid.appendChild(button);
       });
       
-      // Gradient tone buttons
-      document.querySelectorAll('.gradient-button').forEach(button => {
-        button.addEventListener('click', () => {
-          const freq = parseInt(button.dataset.freq);
-          sounds.playTone(freq, 200);
-        });
-      });
-      
-      // Volume control
-      const volumeSlider = document.getElementById('volumeSlider');
-      volumeSlider.addEventListener('input', (e) => {
-        sounds.setVolume(e.target.value / 100);
-      });
-      
-      // TypeWriter demo
-      let typewriterInterval;
+      // TypeWriter demo - simplified
+      let typewriterRunning = false;
       let currentStyle = 'mechanical';
-      const demoText = "juicy sounds brings your interface to life with carefully crafted audio feedback that users actually want to hear.";
+      const demoText = "juicy sounds brings your interface to life with audio that actually feels good.";
       
-      function startTypewriter(style = 'mechanical') {
+      window.switchStyle = (style) => {
         currentStyle = style;
+        document.querySelectorAll('.style-button').forEach(b => 
+          b.classList.remove('active')
+        );
+        event.target.classList.add('active');
+        
+        // Restart typewriter
+        startTypewriter();
+      };
+      
+      function startTypewriter() {
         const textEl = document.getElementById('typewriterText');
         textEl.textContent = '';
+        typewriterRunning = true;
         
-        if (typewriterInterval) clearInterval(typewriterInterval);
-        
-        let index = 0;
-        typewriterInterval = setInterval(() => {
-          if (index < demoText.length) {
-            textEl.textContent += demoText[index];
-            // Create typewriter instance for sound
-            const tw = sounds.createTypewriter({ style: currentStyle });
-            tw.type(demoText[index]);
-            index++;
+        let i = 0;
+        const typeInterval = setInterval(() => {
+          if (i < demoText.length && typewriterRunning) {
+            textEl.textContent += demoText[i];
+            if (demoText[i] !== ' ') {
+              window.sounds.play('click');
+            }
+            i++;
           } else {
-            clearInterval(typewriterInterval);
-            // Restart after a pause
-            setTimeout(() => startTypewriter(currentStyle), 2000);
+            clearInterval(typeInterval);
+            typewriterRunning = false;
           }
-        }, 80 + Math.random() * 40);
+        }, 100);
       }
-      
-      // TypeWriter style buttons
-      document.querySelectorAll('.style-button').forEach(button => {
-        button.addEventListener('click', () => {
-          document.querySelectorAll('.style-button').forEach(b => b.classList.remove('active'));
-          button.classList.add('active');
-          startTypewriter(button.dataset.style);
-        });
-      });
-      
-      // Start typewriter on load
-      setTimeout(() => startTypewriter(), 1000);
       
       // Code tab switching
       const codeExamples = {
@@ -783,16 +772,19 @@ sounds.play('pop')  // ship it`,
   
   const sounds = new JuicySounds()
   sounds.play('coin')  // cha-ching
-</script>`
+<\/script>`
       };
       
-      document.querySelectorAll('.code-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          document.getElementById('codeExample').textContent = codeExamples[tab.dataset.tab];
-        });
-      });
+      window.showTab = (tab) => {
+        document.getElementById('codeExample').textContent = codeExamples[tab];
+        document.querySelectorAll('.code-tab').forEach(t => 
+          t.classList.remove('active')
+        );
+        event.target.classList.add('active');
+      };
+      
+      // Start typewriter after 1 second
+      setTimeout(startTypewriter, 1000);
     </script>
   </body>
 </html>
