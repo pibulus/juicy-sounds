@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juicy Sounds - Advanced Patterns</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        h2 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        h3 {
+            margin: 1rem 0 0.5rem 0;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* Pitch Randomization Demo */
+        .repetition-test {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .test-button {
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .test-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Melodic Navigation */
+        .melodic-nav {
+            display: flex;
+            justify-content: space-around;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: linear-gradient(to right, 
+                #ffcdd2, #ffe0b2, #fff9c4, 
+                #c8e6c9, #bbdefb, #e1bee7);
+            border-radius: 12px;
+        }
+        
+        .nav-item {
+            padding: 1rem 2rem;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* Multi-step Process */
+        .process-steps {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .step {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: #e0e0e0;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .step.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .step.completed {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #999;
+            z-index: 1;
+        }
+        
+        /* Audio-Visual Sync */
+        .juice-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .juice-button {
+            padding: 2rem;
+            border: 3px solid #667eea;
+            border-radius: 12px;
+            background: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .juice-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .juice-button.ripple::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        /* Rapid Fire Test */
+        .rapid-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            margin: 1rem 0;
+        }
+        
+        .rapid-cell {
+            aspect-ratio: 1;
+            background: #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .rapid-cell:hover {
+            background: #667eea;
+        }
+        
+        /* Volume Ramping */
+        .volume-ramp {
+            margin: 1rem 0;
+        }
+        
+        .ramp-button {
+            padding: 1rem 2rem;
+            font-size: 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .ramp-button:hover {
+            background: #5568d3;
+        }
+        
+        .counter {
+            display: inline-block;
+            margin-left: 1rem;
+            padding: 0.5rem 1rem;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .control-item {
+            margin: 0.5rem 0;
+        }
+        
+        label {
+            display: inline-block;
+            width: 150px;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .info-box {
+            padding: 1rem;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Advanced Sound Patterns</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 2rem;">
+            Professional techniques for delightful audio feedback
+        </p>
+        
+        <!-- Pitch Randomization -->
+        <div class="section">
+            <h2>1. Pitch Randomization (Prevents Monotony)</h2>
+            <div class="info-box">
+                💡 Subtle pitch variation (±5%) makes repeated sounds feel organic and alive.
+                Try clicking the same button 20 times - notice the difference!
+            </div>
+            
+            <div class="repetition-test">
+                <div>
+                    <h3>❌ Without Randomization</h3>
+                    <button class="test-button" onclick="playClickExact()">
+                        Click me 20 times<br>
+                        <small>(Becomes annoying)</small>
+                    </button>
+                </div>
+                <div>
+                    <h3>✅ With Randomization</h3>
+                    <button class="test-button" onclick="playClickRandom()">
+                        Click me 20 times<br>
+                        <small>(Stays pleasant)</small>
+                    </button>
+                </div>
+            </div>
+            
+            <p><code>sounds.play('click', { randomPitch: true })</code></p>
+        </div>
+        
+        <!-- Melodic Navigation -->
+        <div class="section">
+            <h2>2. Melodic Navigation (Musical UI)</h2>
+            <div class="info-box">
+                🎹 Each section plays a different note from the C major scale.
+                Quickly hover across all sections to hear a pleasant melody!
+            </div>
+            
+            <div class="melodic-nav">
+                <div class="nav-item" data-note="0">Home</div>
+                <div class="nav-item" data-note="1">About</div>
+                <div class="nav-item" data-note="2">Services</div>
+                <div class="nav-item" data-note="3">Portfolio</div>
+                <div class="nav-item" data-note="4">Contact</div>
+            </div>
+            
+            <p><code>sounds.playGradientSound(index, total)</code></p>
+        </div>
+        
+        <!-- Multi-step Process -->
+        <div class="section">
+            <h2>3. Progressive Multi-Step Process</h2>
+            <div class="info-box">
+                📈 Ascending tones create a sense of progress and achievement.
+                Click through the steps to hear the pitch rise with each stage.
+            </div>
+            
+            <div class="process-steps">
+                <div class="step" data-step="0">Upload</div>
+                <div class="step" data-step="1">Process</div>
+                <div class="step" data-step="2">Analyze</div>
+                <div class="step" data-step="3">Review</div>
+                <div class="step" data-step="4">Complete ✓</div>
+            </div>
+            
+            <button class="test-button" onclick="resetSteps()">Reset Steps</button>
+        </div>
+        
+        <!-- Audio-Visual Sync -->
+        <div class="section">
+            <h2>4. Audio-Visual Synchronization ("Juice")</h2>
+            <div class="info-box">
+                ✨ Combining sound with visual feedback creates maximum satisfaction.
+                Notice how the ripple effect pairs with the sound timing.
+            </div>
+            
+            <div class="juice-demo">
+                <button class="juice-button" onclick="juiceClick(this, 'instant')">
+                    Instant<br>
+                    <small>Sound + Visual together</small>
+                </button>
+                <button class="juice-button" onclick="juiceClick(this, 'delayed')">
+                    Delayed<br>
+                    <small>20ms offset for punch</small>
+                </button>
+                <button class="juice-button" onclick="juiceClick(this, 'reverse')">
+                    Reverse<br>
+                    <small>Visual then sound</small>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Rapid Fire Test -->
+        <div class="section">
+            <h2>5. Rapid Interaction Handling</h2>
+            <div class="info-box">
+                🎯 Hover quickly across the grid. Sounds should blend harmoniously, not clash.
+                This tests if your sounds work well when overlapping.
+            </div>
+            
+            <div class="rapid-grid" id="rapidGrid"></div>
+            
+            <p>Using harmonious intervals prevents dissonance when sounds overlap.</p>
+        </div>
+        
+        <!-- Volume Ramping -->
+        <div class="section">
+            <h2>6. Volume Ramping for Repeated Actions</h2>
+            <div class="info-box">
+                🔊 Gradually reduce volume for rapidly repeated actions to prevent fatigue.
+                Click the button quickly - notice how volume decreases with speed.
+            </div>
+            
+            <button class="ramp-button" onclick="volumeRampClick()">
+                Click Rapidly!
+            </button>
+            <span class="counter">Clicks: <span id="clickCount">0</span></span>
+            <span class="counter">Volume: <span id="volumeLevel">100%</span></span>
+            
+            <p style="margin-top: 1rem;">
+                <small>Volume resets after 1 second of no clicks</small>
+            </p>
+        </div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <h3 style="margin-top: 0;">Global Controls</h3>
+            <div class="control-item">
+                <label>
+                    <input type="checkbox" id="randomPitch" checked> 
+                    Pitch Randomization
+                </label>
+            </div>
+            <div class="control-item">
+                <label>
+                    <input type="checkbox" id="visualFeedback" checked>
+                    Visual Feedback
+                </label>
+            </div>
+            <div class="control-item">
+                <label>
+                    Master Volume:
+                    <input type="range" id="masterVolume" min="0" max="100" value="50">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import JuicySounds from '../src/index.ts';
+        
+        // Initialize
+        const sounds = new JuicySounds({
+            volume: 0.5
+        });
+        
+        // Make functions globally accessible
+        window.sounds = sounds;
+        
+        // 1. Pitch Randomization Demo
+        window.playClickExact = () => {
+            sounds.play('click', { randomPitch: false });
+        };
+        
+        window.playClickRandom = () => {
+            const useRandom = document.getElementById('randomPitch').checked;
+            sounds.play('click', { randomPitch: useRandom });
+        };
+        
+        // 2. Melodic Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const note = parseInt(item.dataset.note);
+                sounds.playGradientSound(note, 5);
+            });
+            item.addEventListener('click', () => {
+                sounds.play('click', { randomPitch: true });
+            });
+        });
+        
+        // 3. Multi-step Process
+        let currentStep = -1;
+        document.querySelectorAll('.step').forEach((step, index) => {
+            step.addEventListener('click', () => {
+                if (index === currentStep + 1) {
+                    currentStep = index;
+                    step.classList.add('active');
+                    
+                    // Play ascending tone
+                    sounds.playGradientSound(index, 5);
+                    
+                    // Mark previous as completed
+                    if (index > 0) {
+                        document.querySelectorAll('.step')[index - 1].classList.remove('active');
+                        document.querySelectorAll('.step')[index - 1].classList.add('completed');
+                    }
+                    
+                    // Final step celebration
+                    if (index === 4) {
+                        setTimeout(() => sounds.play('success'), 200);
+                    }
+                } else if (index <= currentStep) {
+                    // Already completed - play soft click
+                    sounds.play('click', { volume: 0.3 });
+                } else {
+                    // Not ready - play error
+                    sounds.play('error', { volume: 0.2 });
+                }
+            });
+        });
+        
+        window.resetSteps = () => {
+            currentStep = -1;
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            sounds.play('notification');
+        };
+        
+        // 4. Audio-Visual Sync
+        window.juiceClick = (button, timing) => {
+            const doVisual = document.getElementById('visualFeedback').checked;
+            
+            if (timing === 'instant') {
+                if (doVisual) button.classList.add('ripple');
+                sounds.play('click');
+            } else if (timing === 'delayed') {
+                if (doVisual) button.classList.add('ripple');
+                setTimeout(() => sounds.play('click'), 20);
+            } else if (timing === 'reverse') {
+                sounds.play('click');
+                if (doVisual) setTimeout(() => button.classList.add('ripple'), 20);
+            }
+            
+            // Remove ripple
+            setTimeout(() => button.classList.remove('ripple'), 300);
+        };
+        
+        // 5. Rapid Fire Grid
+        const rapidGrid = document.getElementById('rapidGrid');
+        for (let i = 0; i < 64; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'rapid-cell';
+            cell.addEventListener('mouseenter', () => {
+                // Use gradient sounds for harmonic overlap
+                sounds.playGradientSound(i % 6, 6);
+                cell.style.background = `hsl(${(i * 5) % 360}, 70%, 70%)`;
+            });
+            cell.addEventListener('mouseleave', () => {
+                cell.style.background = '#e0e0e0';
+            });
+            rapidGrid.appendChild(cell);
+        }
+        
+        // 6. Volume Ramping
+        let clickTimes = [];
+        let clickCounter = 0;
+        
+        window.volumeRampClick = () => {
+            const now = Date.now();
+            clickTimes.push(now);
+            clickCounter++;
+            
+            // Keep only recent clicks (last second)
+            clickTimes = clickTimes.filter(t => now - t < 1000);
+            
+            // Calculate click rate
+            const clickRate = clickTimes.length;
+            
+            // Ramp volume based on rate (more clicks = quieter)
+            let volume = 1;
+            if (clickRate > 5) volume = 0.3;
+            else if (clickRate > 3) volume = 0.5;
+            else if (clickRate > 1) volume = 0.7;
+            
+            sounds.play('click', { 
+                volume: volume * 0.5, 
+                randomPitch: true 
+            });
+            
+            // Update display
+            document.getElementById('clickCount').textContent = clickCounter;
+            document.getElementById('volumeLevel').textContent = Math.round(volume * 100) + '%';
+            
+            // Reset counter after pause
+            clearTimeout(window.resetTimeout);
+            window.resetTimeout = setTimeout(() => {
+                clickCounter = 0;
+                clickTimes = [];
+                document.getElementById('clickCount').textContent = '0';
+                document.getElementById('volumeLevel').textContent = '100%';
+            }, 1500);
+        };
+        
+        // Master volume control
+        document.getElementById('masterVolume').addEventListener('input', (e) => {
+            sounds.setVolume(e.target.value / 100);
+        });
+        
+        // Initial message
+        console.log('🎵 Advanced Patterns loaded! Try each demo to learn professional sound techniques.');
+    </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+{
+  "name": "interface",
+  "version": "1.0.0",
+  "author": "Kenney",
+  "license": "CC0",
+  "description": "Interface Sounds - Essential UI sounds for delightful feedback",
+  "formats": {
+    "preferred": ["ogg", "mp3", "wav"],
+    "fallback": "silence"
+  },
+  "sounds": {
+    "click": {
+      "default": "click_001.ogg",
+      "variants": ["click_002.ogg", "click_003.ogg"],
+      "volume": 0.15
+    },
+    "hover": {
+      "default": "select_001.ogg",
+      "variants": ["select_002.ogg", "select_003.ogg"],
+      "volume": 0.05
+    },
+    "success": {
+      "default": "confirmation_001.ogg",
+      "variants": ["confirmation_002.ogg", "confirmation_003.ogg"],
+      "volume": 0.3
+    },
+    "error": {
+      "default": "error_001.ogg",
+      "variants": ["error_002.ogg", "error_003.ogg"],
+      "volume": 0.3
+    },
+    "notification": {
+      "default": "glass_001.ogg",
+      "variants": ["glass_002.ogg", "glass_003.ogg"],
+      "volume": 0.25
+    },
+    "toggle": {
+      "on": "switch_001.ogg",
+      "off": "switch_002.ogg",
+      "volume": 0.2
+    },
+    "panel": {
+      "open": "open_001.ogg",
+      "close": "close_001.ogg",
+      "volume": 0.15
+    },
+    "navigation": {
+      "back": "back_001.ogg",
+      "forward": "back_002.ogg",
+      "volume": 0.15
+    },
+    "special": {
+      "pluck": ["pluck_001.ogg", "pluck_002.ogg"],
+      "bong": "bong_001.ogg",
+      "volume": 0.2
+    }
+  },
+  "haptics": {
+    "click": "light",
+    "success": "medium",
+    "error": "medium",
+    "toggle": "light"
+  }
+}

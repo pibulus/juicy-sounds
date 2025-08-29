@@ -1,6 +1,7 @@
 # Juicy Sounds Integration Guide 🎵
 
-A complete guide to integrating Juicy Sounds into your web application for delightful audio feedback.
+A complete guide to integrating Juicy Sounds into your web application for
+delightful audio feedback.
 
 ## Quick Start
 
@@ -15,7 +16,8 @@ import { playSound } from 'juicy-sounds/soundMapping'
 
 ## Integration Points Checklist
 
-### 1. **Buttons** 
+### 1. **Buttons**
+
 ```typescript
 // Primary action buttons (submit, create, export)
 onClick={() => playSound.primaryClick()}
@@ -29,6 +31,7 @@ onClick={() => playSound.selectionSelect()}
 ```
 
 ### 2. **Toggles & Switches**
+
 ```typescript
 // IMPORTANT: Check state to play correct sound
 onClick={() => {
@@ -39,6 +42,7 @@ onClick={() => {
 ```
 
 ### 3. **Panels & Accordions**
+
 ```typescript
 // Collapsible panels
 onClick={() => {
@@ -49,6 +53,7 @@ onClick={() => {
 ```
 
 ### 4. **Sliders & Ranges**
+
 ```typescript
 // Continuous feedback
 onInput={() => playSound.sliderStep()}
@@ -56,6 +61,7 @@ onChange={() => playSound.sliderRelease()}
 ```
 
 ### 5. **Feedback & Notifications**
+
 ```typescript
 // After async operations
 try {
@@ -67,6 +73,7 @@ try {
 ```
 
 ### 6. **Color Pickers**
+
 ```typescript
 // Color selection
 onColorSelect={() => playSound.colorSelect()}
@@ -76,6 +83,7 @@ onSwatchHover={() => playSound.hover()}
 ## Common Patterns
 
 ### Toggle State Handling
+
 ```typescript
 import { playToggleSound } from 'juicy-sounds/soundMapping'
 
@@ -88,6 +96,7 @@ onClick={() => {
 ```
 
 ### Selection Pattern
+
 ```typescript
 import { playSelectionSound } from 'juicy-sounds/soundMapping'
 
@@ -99,6 +108,7 @@ onClick={() => {
 ```
 
 ### Panel Pattern
+
 ```typescript
 import { playPanelSound } from 'juicy-sounds/soundMapping'
 
@@ -112,39 +122,48 @@ onClick={() => {
 ## Available Sounds Reference
 
 ### Primary Interactions
+
 - `playSound.primaryClick()` - Heavy click for main actions
 - `playSound.primaryHover()` - Hover feedback
 
-### Secondary Interactions  
+### Secondary Interactions
+
 - `playSound.secondaryClick()` - Medium click
 - `playSound.secondaryHover()` - Hover feedback
 
 ### Selection
+
 - `playSound.selectionSelect()` - Item selected
 - `playSound.selectionDeselect()` - Item deselected
 
 ### Toggles
+
 - `playSound.toggleOn()` - Switch turned on
 - `playSound.toggleOff()` - Switch turned off
 
 ### Panels
+
 - `playSound.panelExpand()` - Panel opening
 - `playSound.panelCollapse()` - Panel closing
 
 ### Sliders
+
 - `playSound.sliderStep()` - Slider movement
 - `playSound.sliderRelease()` - Slider release
 
 ### Colors
+
 - `playSound.colorSelect()` - Color picked
 
 ### Export/Actions
+
 - `playSound.exportCopy()` - Copy to clipboard
 - `playSound.exportSave()` - Save/download
 - `playSound.exportExport()` - Export complete
 - `playSound.exportShare()` - Share link
 
 ### Feedback
+
 - `playSound.feedbackSuccess()` - Success
 - `playSound.feedbackError()` - Error
 - `playSound.feedbackWarning()` - Warning
@@ -152,6 +171,7 @@ onClick={() => {
 - `playSound.feedbackCelebration()` - Achievement
 
 ### Special
+
 - `playSound.specialDiceRoll()` - Random/surprise
 - `playSound.specialMagic()` - Magic effects
 - `playSound.specialUnlock()` - Feature unlock
@@ -160,21 +180,23 @@ onClick={() => {
 ## Testing Your Integration
 
 ### Browser Console Testing
+
 ```javascript
 // Test all sounds
-testJuicySounds()
+testJuicySounds();
 
 // Test individual sound
-juicySounds.playSound.primaryClick()
+juicySounds.playSound.primaryClick();
 
 // List all available sounds
-juicySounds.listAvailableSounds()
+juicySounds.listAvailableSounds();
 
 // Get sound categories info
-juicySounds.getSoundCategories()
+juicySounds.getSoundCategories();
 ```
 
 ### Volume Guidelines
+
 - Hover: 5% volume (very subtle)
 - Clicks: 15% volume (noticeable but not jarring)
 - Success/Error: 30-40% volume (important feedback)
@@ -201,19 +223,20 @@ juicySounds.getSoundCategories()
 Switch between different sound packs:
 
 ```typescript
-import { SOUND_THEMES } from 'juicy-sounds/soundConfig'
+import { SOUND_THEMES } from "juicy-sounds/soundConfig";
 
 // Available themes: default, playful, minimal, retro
-setSoundTheme('playful');
+setSoundTheme("playful");
 ```
 
 ## Framework Examples
 
 ### React
+
 ```jsx
 function Button({ onClick, children }) {
   return (
-    <button 
+    <button
       onClick={() => {
         playSound.primaryClick();
         onClick?.();
@@ -227,6 +250,7 @@ function Button({ onClick, children }) {
 ```
 
 ### Vue
+
 ```vue
 <template>
   <button 
@@ -252,6 +276,7 @@ export default {
 ```
 
 ### Svelte
+
 ```svelte
 <script>
   import { playSound } from 'juicy-sounds/soundMapping'
@@ -273,25 +298,29 @@ export default {
 ## Troubleshooting
 
 ### No sound playing?
+
 1. Check browser console for errors
 2. Ensure user has interacted with page (autoplay policy)
 3. Verify sound files are being served correctly
 4. Check if sounds are enabled: `soundService.isSoundEnabled()`
 
 ### Wrong sounds playing?
+
 1. Check you're using state-aware patterns for toggles
 2. Verify sound file paths in `soundConfig.ts`
 3. Test with `juicySounds.playSound.[soundName]()` in console
 
 ### Performance issues?
+
 1. Sounds are cached after first play
 2. Consider reducing volume for frequently-triggered sounds
 3. Disable sounds on low-end devices if needed
 
 ## Contributing
 
-Found a bug or want to add sounds? Check our [GitHub repo](https://github.com/pibulus/juicy-sounds)!
+Found a bug or want to add sounds? Check our
+[GitHub repo](https://github.com/pibulus/juicy-sounds)!
 
 ---
 
-*Made with 🎵 by the Juicy Sounds team*
+_Made with 🎵 by the Juicy Sounds team_
