@@ -38,84 +38,72 @@
         /* Neo-brutalist */
         --border: 3px solid var(--black);
         --border-thick: 4px solid var(--black);
-        --shadow: 6px 6px 0px var(--black);
-        --shadow-small: 3px 3px 0px var(--black);
-        --border-radius: 12px;
+        --shadow: 4px 4px 0px var(--black);
+        --shadow-small: 2px 2px 0px var(--black);
+        --border-radius: 8px;
       }
       
       body {
         font-family: 'Space Grotesk', -apple-system, sans-serif;
-        background: radial-gradient(circle at top left, var(--cream), var(--butter));
+        background: linear-gradient(135deg, var(--cream), var(--butter));
         color: var(--text);
         line-height: 1.5;
         min-height: 100vh;
-        overflow-x: hidden;
       }
       
-      /* Floating Background Elements */
+      /* Floating Background Elements - more subtle */
       .float-bg {
         position: fixed;
         border-radius: 50%;
-        opacity: 0.3;
+        opacity: 0.15;
         animation: float 20s infinite ease-in-out;
         pointer-events: none;
         z-index: 0;
       }
       
       .float-1 {
-        width: 300px;
-        height: 300px;
-        background: linear-gradient(135deg, var(--peach), var(--pink));
-        top: -100px;
+        width: 200px;
+        height: 200px;
+        background: var(--peach);
+        top: -50px;
         right: -50px;
-        animation-delay: 0s;
       }
       
       .float-2 {
-        width: 200px;
-        height: 200px;
-        background: linear-gradient(135deg, var(--lavender), var(--pool));
+        width: 150px;
+        height: 150px;
+        background: var(--lavender);
         bottom: 100px;
         left: -50px;
         animation-delay: 5s;
       }
       
-      .float-3 {
-        width: 150px;
-        height: 150px;
-        background: linear-gradient(135deg, var(--mint), var(--sage));
-        top: 50%;
-        right: 10%;
-        animation-delay: 10s;
-      }
-      
       @keyframes float {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        25% { transform: translate(30px, -30px) rotate(90deg); }
-        50% { transform: translate(-20px, 20px) rotate(180deg); }
-        75% { transform: translate(-30px, -10px) rotate(270deg); }
+        0%, 100% { transform: translate(0, 0); }
+        25% { transform: translate(20px, -20px); }
+        50% { transform: translate(-15px, 15px); }
+        75% { transform: translate(-20px, -10px); }
       }
       
-      /* Layout */
+      /* Layout - tighter */
       .container {
-        max-width: 1200px;
+        max-width: 1000px;
         margin: 0 auto;
-        padding: 2rem;
+        padding: 1.5rem;
         position: relative;
         z-index: 1;
       }
       
-      /* Header */
+      /* Header - tighter */
       header {
         text-align: center;
-        padding: 4rem 0 6rem;
-        position: relative;
+        padding: 2rem 0 3rem;
       }
       
       .logo {
-        font-size: clamp(3rem, 8vw, 5rem);
+        font-size: clamp(2.5rem, 7vw, 4rem);
         font-weight: 700;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
         letter-spacing: -0.02em;
         animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
@@ -128,38 +116,37 @@
       }
       
       .tagline {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         color: var(--text-light);
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
         animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
       }
       
       @keyframes slideDown {
-        from { transform: translateY(-30px); opacity: 0; }
+        from { transform: translateY(-20px); opacity: 0; }
         to { transform: translateY(0); opacity: 1; }
       }
       
       @keyframes slideUp {
-        from { transform: translateY(30px); opacity: 0; }
+        from { transform: translateY(20px); opacity: 0; }
         to { transform: translateY(0); opacity: 1; }
       }
       
-      /* Hero Card */
+      /* Hero Card - tighter */
       .hero-card {
         background: var(--eggshell);
         border: var(--border-thick);
         border-radius: var(--border-radius);
         box-shadow: var(--shadow);
-        padding: 3rem;
-        margin-bottom: 4rem;
-        position: relative;
+        padding: 2rem;
+        margin-bottom: 2.5rem;
         animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
         transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       
       .hero-card:hover {
-        transform: translate(-2px, -2px);
-        box-shadow: 8px 8px 0px var(--black);
+        transform: translate(-1px, -1px);
+        box-shadow: 5px 5px 0px var(--black);
       }
       
       .hero-content {
@@ -171,37 +158,35 @@
       @media (min-width: 768px) {
         .hero-content {
           grid-template-columns: 1fr 1fr;
-          gap: 4rem;
         }
       }
       
       .hero-text h2 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
         line-height: 1.2;
       }
       
       .hero-text p {
         color: var(--text-light);
-        margin-bottom: 1.5rem;
-        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
       }
       
       .feature-list {
         list-style: none;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
       }
       
       .feature-list li {
-        padding: 0.5rem 0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
+        padding: 0.35rem 0;
+        color: var(--text-light);
       }
       
       .feature-list li::before {
-        content: "✨";
-        font-size: 1.2rem;
+        content: "→ ";
+        color: var(--coral);
+        font-weight: 700;
       }
       
       /* Try It Button */
@@ -210,8 +195,8 @@
         color: white;
         border: var(--border);
         border-radius: 100px;
-        padding: 1rem 2rem;
-        font-size: 1.1rem;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
         font-weight: 600;
         cursor: pointer;
         box-shadow: var(--shadow-small);
@@ -223,98 +208,76 @@
       
       .try-button:hover {
         transform: translate(-2px, -2px);
-        box-shadow: 5px 5px 0px var(--black);
+        box-shadow: 4px 4px 0px var(--black);
       }
       
       .try-button:active {
-        transform: translate(1px, 1px);
-        box-shadow: 2px 2px 0px var(--black);
+        transform: translate(0px, 0px);
+        box-shadow: 1px 1px 0px var(--black);
       }
       
-      /* Sound Grid */
+      /* Sound Grid - cleaner design */
       .sound-grid-section {
-        margin-bottom: 4rem;
+        margin-bottom: 2.5rem;
       }
       
       .sound-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 1rem;
-        margin-top: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 0.75rem;
+        margin-top: 1.5rem;
       }
       
       .sound-button {
-        background: var(--eggshell);
-        border: var(--border);
-        border-radius: var(--border-radius);
-        padding: 1.5rem 1rem;
+        background: linear-gradient(135deg, var(--eggshell), white);
+        border: 2px solid var(--black);
+        border-radius: 6px;
+        padding: 1rem 0.5rem;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
         text-align: center;
         font-family: inherit;
         position: relative;
         overflow: hidden;
       }
       
-      .sound-button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, var(--pink), var(--lavender));
-        opacity: 0;
-        transition: opacity 0.3s;
-      }
-      
       .sound-button:hover {
-        transform: translate(-2px, -2px);
-        box-shadow: var(--shadow-small);
+        transform: translate(-1px, -1px);
+        box-shadow: 2px 2px 0px var(--black);
+        background: linear-gradient(135deg, var(--mint), var(--sage));
       }
       
       .sound-button:active {
         transform: translate(1px, 1px);
-        box-shadow: 1px 1px 0px var(--black);
+        box-shadow: none;
       }
       
-      .sound-button.playing::before {
-        opacity: 0.2;
-        animation: pulse 0.3s;
+      .sound-button.playing {
+        animation: soundPulse 0.3s;
+        background: linear-gradient(135deg, var(--pink), var(--lavender));
       }
       
-      @keyframes pulse {
-        0% { transform: scale(0.8); opacity: 0.5; }
-        50% { transform: scale(1.1); opacity: 0.3; }
-        100% { transform: scale(1); opacity: 0.2; }
-      }
-      
-      .sound-emoji {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-        display: block;
-        position: relative;
-        z-index: 1;
+      @keyframes soundPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.95); }
+        100% { transform: scale(1); }
       }
       
       .sound-name {
-        font-size: 0.9rem;
-        font-weight: 500;
+        font-size: 0.85rem;
+        font-weight: 600;
         color: var(--text);
-        position: relative;
-        z-index: 1;
       }
       
-      /* Section Headers */
+      /* Section Headers - tighter */
       .section-header {
         text-align: center;
-        margin-bottom: 3rem;
-        position: relative;
+        margin-bottom: 1.5rem;
       }
       
       .section-header h2 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
         position: relative;
         display: inline-block;
       }
@@ -322,41 +285,39 @@
       .section-header h2::after {
         content: '';
         position: absolute;
-        bottom: -10px;
+        bottom: -8px;
         left: 50%;
         transform: translateX(-50%);
-        width: 60px;
-        height: 4px;
+        width: 40px;
+        height: 3px;
         background: linear-gradient(90deg, var(--coral), var(--peach));
         border-radius: 2px;
       }
       
       .section-header p {
         color: var(--text-light);
-        font-size: 1.2rem;
+        font-size: 1.05rem;
       }
       
-      /* TypeWriter Demo */
+      /* TypeWriter Demo - tighter */
       .typewriter-demo {
-        background: linear-gradient(135deg, var(--lavender), var(--pool));
+        background: linear-gradient(135deg, var(--pool), var(--lavender));
         border: var(--border-thick);
         border-radius: var(--border-radius);
-        padding: 3rem;
+        padding: 2rem;
         box-shadow: var(--shadow);
-        margin-bottom: 4rem;
-        position: relative;
+        margin-bottom: 2.5rem;
       }
       
       .typewriter-screen {
         background: var(--eggshell);
-        border: var(--border);
-        border-radius: 8px;
-        padding: 2rem;
-        min-height: 200px;
-        font-family: 'Space Grotesk', monospace;
-        font-size: 1.2rem;
-        line-height: 1.8;
-        box-shadow: inset 2px 2px 8px rgba(0,0,0,0.1);
+        border: 2px solid var(--black);
+        border-radius: 6px;
+        padding: 1.5rem;
+        min-height: 150px;
+        font-family: 'Courier New', monospace;
+        font-size: 1.1rem;
+        line-height: 1.6;
       }
       
       .typewriter-text {
@@ -365,8 +326,8 @@
       
       .typewriter-cursor {
         display: inline-block;
-        width: 3px;
-        height: 1.4em;
+        width: 2px;
+        height: 1.2em;
         background: var(--text);
         animation: blink 1s infinite;
         vertical-align: text-bottom;
@@ -380,54 +341,104 @@
       
       .typewriter-controls {
         display: flex;
-        gap: 1rem;
-        margin-top: 2rem;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
         flex-wrap: wrap;
       }
       
       .style-button {
         background: var(--eggshell);
-        border: var(--border);
+        border: 2px solid var(--black);
         border-radius: 100px;
-        padding: 0.75rem 1.5rem;
+        padding: 0.5rem 1.25rem;
         cursor: pointer;
         font-family: inherit;
         font-weight: 500;
-        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        font-size: 0.9rem;
+        transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       
       .style-button:hover {
-        transform: translate(-2px, -2px);
-        box-shadow: var(--shadow-small);
+        transform: translate(-1px, -1px);
+        box-shadow: 2px 2px 0px var(--black);
       }
       
       .style-button.active {
         background: linear-gradient(135deg, var(--mint), var(--sage));
-        color: var(--text);
       }
       
-      /* Code Examples */
+      /* Gradient Demo */
+      .gradient-demo {
+        background: var(--eggshell);
+        border: var(--border-thick);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2.5rem;
+      }
+      
+      .gradient-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .gradient-button {
+        width: 80px;
+        height: 80px;
+        border: 2px solid var(--black);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .gradient-button span {
+        position: absolute;
+        bottom: 4px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      }
+      
+      .gradient-button:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 3px 3px 0px var(--black);
+      }
+      
+      .gradient-button:active {
+        transform: translate(0, 0);
+        box-shadow: none;
+      }
+      
+      /* Code Examples - tighter */
       .code-section {
-        margin-bottom: 4rem;
+        margin-bottom: 2.5rem;
       }
       
       .code-tabs {
         display: flex;
         gap: 0.5rem;
-        margin-bottom: -3px;
-        flex-wrap: wrap;
+        margin-bottom: -2px;
       }
       
       .code-tab {
         background: var(--eggshell);
-        border: var(--border);
+        border: 2px solid var(--black);
         border-bottom: none;
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
-        padding: 0.75rem 1.5rem;
+        border-radius: 6px 6px 0 0;
+        padding: 0.5rem 1.25rem;
         cursor: pointer;
         font-family: inherit;
         font-weight: 500;
-        transition: all 0.2s;
+        font-size: 0.9rem;
+        transition: all 0.15s;
       }
       
       .code-tab.active {
@@ -439,8 +450,8 @@
         background: var(--text);
         color: var(--cream);
         border: var(--border-thick);
-        border-radius: 0 var(--border-radius) var(--border-radius) var(--border-radius);
-        padding: 2rem;
+        border-radius: 0 8px 8px 8px;
+        padding: 1.5rem;
         overflow-x: auto;
         box-shadow: var(--shadow);
       }
@@ -448,43 +459,43 @@
       pre {
         margin: 0;
         font-family: 'Courier New', monospace;
-        font-size: 0.9rem;
-        line-height: 1.6;
+        font-size: 0.85rem;
+        line-height: 1.5;
       }
       
       /* Volume Control */
       .volume-control {
         position: fixed;
-        bottom: 2rem;
-        right: 2rem;
+        bottom: 1.5rem;
+        right: 1.5rem;
         background: var(--eggshell);
-        border: var(--border);
+        border: 2px solid var(--black);
         border-radius: 100px;
-        padding: 1rem;
+        padding: 0.75rem;
         display: flex;
         align-items: center;
-        gap: 1rem;
-        box-shadow: var(--shadow);
+        gap: 0.75rem;
+        box-shadow: var(--shadow-small);
         z-index: 100;
       }
       
       .volume-slider {
-        width: 100px;
+        width: 80px;
         -webkit-appearance: none;
         appearance: none;
-        height: 6px;
+        height: 4px;
         background: var(--lavender);
-        border-radius: 3px;
+        border-radius: 2px;
         outline: none;
       }
       
       .volume-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 20px;
-        height: 20px;
-        background: linear-gradient(135deg, var(--coral), var(--peach));
-        border: var(--border);
+        width: 16px;
+        height: 16px;
+        background: var(--coral);
+        border: 2px solid var(--black);
         border-radius: 50%;
         cursor: pointer;
       }
@@ -492,7 +503,7 @@
       /* Footer */
       footer {
         text-align: center;
-        padding: 4rem 0 2rem;
+        padding: 3rem 0 2rem;
         color: var(--text-light);
       }
       
@@ -500,26 +511,26 @@
         display: flex;
         justify-content: center;
         gap: 2rem;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
       }
       
       .footer-links a {
         color: var(--text);
         text-decoration: none;
         font-weight: 500;
-        transition: all 0.2s;
+        transition: all 0.15s;
         position: relative;
       }
       
       .footer-links a::after {
         content: '';
         position: absolute;
-        bottom: -4px;
+        bottom: -3px;
         left: 0;
         width: 0;
         height: 2px;
-        background: linear-gradient(90deg, var(--coral), var(--peach));
-        transition: width 0.3s;
+        background: var(--coral);
+        transition: width 0.2s;
       }
       
       .footer-links a:hover::after {
@@ -533,12 +544,11 @@
         }
         
         .hero-card {
-          padding: 2rem 1.5rem;
+          padding: 1.5rem;
         }
         
-        .volume-control {
-          bottom: 1rem;
-          right: 1rem;
+        .sound-grid {
+          grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
         }
       }
     </style>
@@ -548,7 +558,6 @@
     <!-- Floating Background Elements -->
     <div class="float-bg float-1"></div>
     <div class="float-bg float-2"></div>
-    <div class="float-bg float-3"></div>
     
     <div class="container">
       <header>
@@ -562,23 +571,35 @@
       <div class="hero-card">
         <div class="hero-content">
           <div class="hero-text">
-            <h2>sounds that slap.<br>zero bundle bloat.</h2>
+            <h2>feedback that slaps.<br>zero bundle bloat.</h2>
             <p>
-              drop it in. pick your vibe. ship.
+              drop it in. pick your vibe. ship delight.
             </p>
             <ul class="feature-list">
-              <li>24 real sounds (no midi nonsense)</li>
-              <li>lazy loads when needed</li>
-              <li>gradient synth tones on tap</li>
-              <li>works everywhere</li>
+              <li>24 real instrument sounds</li>
+              <li>gradient synth tones</li>
+              <li>typewriter engine</li>
+              <li>lazy loads on demand</li>
             </ul>
-            <button class="try-button" onclick="playDemoSound()">
-              <span>feel the juice</span>
-              <span>🎵</span>
+            <button class="try-button" id="tryButton">
+              feel the juice 🎵
             </button>
           </div>
-          <div class="hero-visual">
-            <!-- Could add an animated SVG here -->
+          <div class="hero-demo">
+            <div class="gradient-demo" style="padding: 1.5rem;">
+              <p style="margin-bottom: 1rem; font-size: 0.9rem; text-align: center;">gradient tones →</p>
+              <div class="gradient-buttons">
+                <button class="gradient-button" data-freq="220" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53);">
+                  <span>low</span>
+                </button>
+                <button class="gradient-button" data-freq="440" style="background: linear-gradient(135deg, #667EEA, #764BA2);">
+                  <span>mid</span>
+                </button>
+                <button class="gradient-button" data-freq="880" style="background: linear-gradient(135deg, #F093FB, #F5576C);">
+                  <span>high</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -587,7 +608,7 @@
       <section class="sound-grid-section">
         <div class="section-header">
           <h2>pick your flavor</h2>
-          <p>every sound. right here. tap to taste.</p>
+          <p>tap any sound to preview</p>
         </div>
         <div class="sound-grid" id="soundGrid">
           <!-- Populated by JS -->
@@ -597,17 +618,17 @@
       <!-- TypeWriter Demo -->
       <section class="typewriter-demo">
         <div class="section-header">
-          <h2>typewriter magic</h2>
-          <p>realistic typing. multiple styles. pure satisfaction.</p>
+          <h2>typewriter engine</h2>
+          <p>realistic typing sounds. three styles.</p>
         </div>
         <div class="typewriter-screen">
           <span class="typewriter-text" id="typewriterText"></span>
           <span class="typewriter-cursor"></span>
         </div>
         <div class="typewriter-controls">
-          <button class="style-button active" onclick="switchTypewriterStyle('mechanical')">mechanical</button>
-          <button class="style-button" onclick="switchTypewriterStyle('soft')">soft touch</button>
-          <button class="style-button" onclick="switchTypewriterStyle('vintage')">vintage</button>
+          <button class="style-button active" data-style="mechanical">mechanical</button>
+          <button class="style-button" data-style="soft">soft touch</button>
+          <button class="style-button" data-style="vintage">vintage</button>
         </div>
       </section>
       
@@ -618,9 +639,9 @@
           <p>one import. done.</p>
         </div>
         <div class="code-tabs">
-          <button class="code-tab active" onclick="showCodeTab('npm')">npm</button>
-          <button class="code-tab" onclick="showCodeTab('deno')">deno</button>
-          <button class="code-tab" onclick="showCodeTab('cdn')">cdn</button>
+          <button class="code-tab active" data-tab="npm">npm</button>
+          <button class="code-tab" data-tab="deno">deno</button>
+          <button class="code-tab" data-tab="cdn">cdn</button>
         </div>
         <div class="code-content">
           <pre id="codeExample">npm install juicy-sounds
@@ -650,8 +671,8 @@ sounds.play('success')  // that's it</pre>
     
     <!-- Scripts -->
     <script type="module">
-      // Import the browser-ready version
-      import JuicySounds from './lib/juicy-sounds.js';
+      // Import the bundled version
+      import JuicySounds from './dist/juicy-sounds.js';
       
       // Initialize
       const sounds = new JuicySounds({
@@ -660,55 +681,42 @@ sounds.play('success')  // that's it</pre>
         soundpack: 'kenney'
       });
       
-      // Make functions global for onclick handlers
-      window.sounds = sounds;
-      
-      window.playDemoSound = () => {
+      // Try button
+      document.getElementById('tryButton').addEventListener('click', () => {
         sounds.play('success');
-      };
+      });
       
-      // Populate sound grid
+      // Populate sound grid with cleaner names
       const soundGrid = document.getElementById('soundGrid');
-      const soundMap = {
-        'success': '✨',
-        'error': '💥',
-        'click': '👆',
-        'hover': '✋',
-        'notification': '🔔',
-        'powerUp': '⚡',
-        'powerDown': '🔌',
-        'coin': '🪙',
-        'jump': '🦘',
-        'land': '👟',
-        'swoosh': '💨',
-        'pop': '🎈',
-        'achievement': '🏆',
-        'levelUp': '📈',
-        'select': '✅',
-        'cancel': '❌',
-        'open': '📂',
-        'close': '📁',
-        'send': '📤',
-        'receive': '📥',
-        'message': '💬',
-        'warning': '⚠️',
-        'info': 'ℹ️',
-        'question': '❓'
-      };
+      const soundNames = [
+        'success', 'error', 'click', 'hover',
+        'notification', 'powerUp', 'powerDown', 'coin',
+        'jump', 'land', 'swoosh', 'pop',
+        'achievement', 'levelUp', 'select', 'cancel',
+        'open', 'close', 'send', 'receive',
+        'message', 'warning', 'info', 'question'
+      ];
       
-      Object.entries(soundMap).forEach(([sound, emoji]) => {
+      soundNames.forEach(sound => {
         const button = document.createElement('button');
         button.className = 'sound-button';
-        button.innerHTML = `
-          <span class="sound-emoji">${emoji}</span>
-          <span class="sound-name">${sound}</span>
-        `;
-        button.onclick = () => {
+        button.innerHTML = `<span class="sound-name">${sound}</span>`;
+        button.addEventListener('click', () => {
+          // Remove playing class from all buttons
+          document.querySelectorAll('.sound-button').forEach(b => b.classList.remove('playing'));
           button.classList.add('playing');
           sounds.play(sound);
           setTimeout(() => button.classList.remove('playing'), 300);
-        };
+        });
         soundGrid.appendChild(button);
+      });
+      
+      // Gradient tone buttons
+      document.querySelectorAll('.gradient-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const freq = parseInt(button.dataset.freq);
+          sounds.playTone(freq, 200);
+        });
       });
       
       // Volume control
@@ -718,70 +726,72 @@ sounds.play('success')  // that's it</pre>
       });
       
       // TypeWriter demo
-      let typewriter;
+      let typewriterInterval;
+      let currentStyle = 'mechanical';
       const demoText = "juicy sounds brings your interface to life with carefully crafted audio feedback that users actually want to hear.";
       
-      function initTypewriter(style = 'mechanical') {
-        if (typewriter) typewriter.stop();
-        
+      function startTypewriter(style = 'mechanical') {
+        currentStyle = style;
         const textEl = document.getElementById('typewriterText');
         textEl.textContent = '';
         
+        if (typewriterInterval) clearInterval(typewriterInterval);
+        
         let index = 0;
-        const type = () => {
+        typewriterInterval = setInterval(() => {
           if (index < demoText.length) {
             textEl.textContent += demoText[index];
-            sounds.playTyping(style);
+            // Create typewriter instance for sound
+            const tw = sounds.createTypewriter({ style: currentStyle });
+            tw.type(demoText[index]);
             index++;
-            setTimeout(type, 50 + Math.random() * 100);
+          } else {
+            clearInterval(typewriterInterval);
+            // Restart after a pause
+            setTimeout(() => startTypewriter(currentStyle), 2000);
           }
-        };
-        
-        typewriter = {
-          stop: () => { index = demoText.length; }
-        };
-        
-        type();
+        }, 80 + Math.random() * 40);
       }
       
-      window.switchTypewriterStyle = (style) => {
-        document.querySelectorAll('.style-button').forEach(btn => {
-          btn.classList.remove('active');
+      // TypeWriter style buttons
+      document.querySelectorAll('.style-button').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.style-button').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+          startTypewriter(button.dataset.style);
         });
-        event.target.classList.add('active');
-        initTypewriter(style);
-      };
+      });
       
       // Start typewriter on load
-      setTimeout(() => initTypewriter(), 1000);
+      setTimeout(() => startTypewriter(), 1000);
       
       // Code tab switching
-      window.showCodeTab = (tab) => {
-        const examples = {
-          npm: `npm install juicy-sounds
+      const codeExamples = {
+        npm: `npm install juicy-sounds
 
 import JuicySounds from 'juicy-sounds'
 
 const sounds = new JuicySounds()
 sounds.play('success')  // that's it`,
-          deno: `import JuicySounds from 'https://deno.land/x/juicy_sounds/mod.ts'
+        deno: `import JuicySounds from 'https://deno.land/x/juicy_sounds/mod.ts'
 
 const sounds = new JuicySounds()
-sounds.play('pop')  // boom`,
-          cdn: `<script type="module">
-  import JuicySounds from 'https://cdn.skypack.dev/juicy-sounds'
+sounds.play('pop')  // ship it`,
+        cdn: `<script type="module">
+  import JuicySounds from 'https://esm.sh/juicy-sounds'
   
   const sounds = new JuicySounds()
   sounds.play('coin')  // cha-ching
 </script>`
-        };
-        
-        document.getElementById('codeExample').textContent = examples[tab];
-        document.querySelectorAll('.code-tab').forEach(btn => {
-          btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
       };
+      
+      document.querySelectorAll('.code-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById('codeExample').textContent = codeExamples[tab.dataset.tab];
+        });
+      });
     </script>
   </body>
 </html>
