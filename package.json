@@ -2,13 +2,11 @@
   "name": "juicy-sounds",
   "version": "1.0.0",
   "description": "A delightful sound library for web interfaces that actually feels good. No corporate beeps, just pure audio juice.",
-  "main": "src/index.ts",
-  "module": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/juicy-simple.js",
+  "module": "dist/juicy-simple.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"No tests yet, but the sounds are juicy\" && exit 0",
-    "example": "cd examples && npx vite"
+    "test": "echo \"No tests yet, but the sounds are juicy\" && exit 0"
   },
   "keywords": [
     "audio",
@@ -36,7 +34,7 @@
     "node": ">=16.0.0"
   },
   "files": [
-    "src",
+    "dist",
     "sounds",
     "README.md",
     "LICENSE"
