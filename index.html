@@ -717,7 +717,6 @@
           <button class="style-button" onclick="playScale('pentatonic')">Pentatonic</button>
           <button class="style-button" onclick="playScale('blues')">Blues</button>
           <button class="style-button" onclick="playScale('minecraft')">Minecraft</button>
-          <button class="style-button" onclick="playRandomScale()">🎲 Random</button>
         </div>
         <div class="gradient-buttons" id="scaleButtons">
           <!-- Will be populated with note buttons -->
@@ -991,21 +990,18 @@ sounds.play('success')  // that's it</pre>
       
       let currentScale = 'major';
       
-      window.playRandomScale = () => {
-        const scaleNames = Object.keys(scales);
-        const randomScale = scaleNames[Math.floor(Math.random() * scaleNames.length)];
-        window.playScale(randomScale);
-      };
-      
       window.playScale = (scaleName) => {
         currentScale = scaleName;
         const scaleButtons = document.getElementById('scaleButtons');
         scaleButtons.innerHTML = '';
         
         // Mark active scale button
-        event.target.classList.add('active');
-        setTimeout(() => event.target.classList.remove('active'), 200);
+        if (event && event.target) {
+          event.target.classList.add('active');
+          setTimeout(() => event.target.classList.remove('active'), 200);
+        }
         
+        // Add regular note buttons
         scales[scaleName].forEach((noteInfo, index) => {
           const button = document.createElement('button');
           button.className = 'gradient-button';
@@ -1027,6 +1023,40 @@ sounds.play('success')  // that's it</pre>
           };
           scaleButtons.appendChild(button);
         });
+        
+        // Add random button at the end
+        const randomButton = document.createElement('button');
+        randomButton.className = 'gradient-button';
+        randomButton.style.background = 'linear-gradient(135deg, #FF00FF, #00FFFF)';
+        randomButton.innerHTML = '<span>🎲</span>';
+        randomButton.onclick = () => {
+          const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
+          window.sounds.playTone(randomNote.freq, 300);
+          randomButton.style.transform = 'scale(0.95)';
+          setTimeout(() => randomButton.style.transform = '', 150);
+        };
+        
+        let hoverInterval;
+        randomButton.onmouseenter = () => {
+          // Play random notes continuously while hovering
+          const playRandomNote = () => {
+            const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
+            window.sounds.playTone(randomNote.freq, 150);
+            randomButton.style.background = `linear-gradient(135deg, ${randomNote.color}, ${randomNote.color}dd)`;
+          };
+          playRandomNote(); // Play immediately
+          hoverInterval = setInterval(playRandomNote, 200); // Then every 200ms
+          randomButton.style.transform = 'scale(1.05)';
+          randomButton.style.boxShadow = '3px 3px 0px var(--black)';
+        };
+        randomButton.onmouseleave = () => {
+          clearInterval(hoverInterval);
+          randomButton.style.transform = '';
+          randomButton.style.boxShadow = '';
+          randomButton.style.background = 'linear-gradient(135deg, #FF00FF, #00FFFF)';
+        };
+        
+        scaleButtons.appendChild(randomButton);
         
         // Play the scale automatically
         scales[scaleName].forEach((noteInfo, index) => {
@@ -1041,28 +1071,7 @@ sounds.play('success')  // that's it</pre>
       
       // Initialize with major scale
       setTimeout(() => {
-        const scaleButtons = document.getElementById('scaleButtons');
-        scales.major.forEach((noteInfo) => {
-          const button = document.createElement('button');
-          button.className = 'gradient-button';
-          button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
-          button.innerHTML = `<span>${noteInfo.note}</span>`;
-          button.onclick = () => {
-            window.sounds.playTone(noteInfo.freq, 300);
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => button.style.transform = '', 150);
-          };
-          button.onmouseenter = () => {
-            window.sounds.playTone(noteInfo.freq, 150);
-            button.style.transform = 'scale(1.05)';
-            button.style.boxShadow = '3px 3px 0px var(--black)';
-          };
-          button.onmouseleave = () => {
-            button.style.transform = '';
-            button.style.boxShadow = '';
-          };
-          scaleButtons.appendChild(button);
-        });
+        window.playScale('major');
       }, 100);
       
       // Code tab switching
