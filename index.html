@@ -999,7 +999,13 @@ sounds.play('success')  // that's it</pre>
             setTimeout(() => button.style.transform = '', 150);
           };
           button.onmouseenter = () => {
-            window.sounds.playTone(noteInfo.freq, 100);
+            window.sounds.playTone(noteInfo.freq, 150);
+            button.style.transform = 'scale(1.05)';
+            button.style.boxShadow = '3px 3px 0px var(--black)';
+          };
+          button.onmouseleave = () => {
+            button.style.transform = '';
+            button.style.boxShadow = '';
           };
           scaleButtons.appendChild(button);
         });
@@ -1029,7 +1035,13 @@ sounds.play('success')  // that's it</pre>
             setTimeout(() => button.style.transform = '', 150);
           };
           button.onmouseenter = () => {
-            window.sounds.playTone(noteInfo.freq, 100);
+            window.sounds.playTone(noteInfo.freq, 150);
+            button.style.transform = 'scale(1.05)';
+            button.style.boxShadow = '3px 3px 0px var(--black)';
+          };
+          button.onmouseleave = () => {
+            button.style.transform = '';
+            button.style.boxShadow = '';
           };
           scaleButtons.appendChild(button);
         });
