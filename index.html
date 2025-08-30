@@ -717,6 +717,7 @@
           <button class="style-button" onclick="playScale('pentatonic')">Pentatonic</button>
           <button class="style-button" onclick="playScale('blues')">Blues</button>
           <button class="style-button" onclick="playScale('minecraft')">Minecraft</button>
+          <button class="style-button" id="chaosMode" onclick="toggleChaosMode()">🎲 Chaos</button>
         </div>
         <div class="gradient-buttons" id="scaleButtons">
           <!-- Will be populated with note buttons -->
@@ -989,9 +990,31 @@ sounds.play('success')  // that's it</pre>
       };
       
       let currentScale = 'major';
+      let chaosMode = false;
+      let isPlaying = false;
+      let playInterval;
+      
+      window.toggleChaosMode = () => {
+        chaosMode = !chaosMode;
+        const chaosBtn = document.getElementById('chaosMode');
+        if (chaosMode) {
+          chaosBtn.classList.add('active');
+          chaosBtn.style.background = 'linear-gradient(135deg, #FF00FF, #00FFFF)';
+        } else {
+          chaosBtn.classList.remove('active');
+          chaosBtn.style.background = '';
+        }
+        // Regenerate current scale with new mode
+        window.playScale(currentScale);
+      };
       
       window.playScale = (scaleName) => {
         currentScale = scaleName;
+        // Stop playing if switching scales
+        if (isPlaying) {
+          isPlaying = false;
+          clearInterval(playInterval);
+        }
         const scaleButtons = document.getElementById('scaleButtons');
         scaleButtons.innerHTML = '';
         
@@ -1008,55 +1031,79 @@ sounds.play('success')  // that's it</pre>
           button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
           button.innerHTML = `<span>${noteInfo.note}</span>`;
           button.onclick = () => {
-            window.sounds.playTone(noteInfo.freq, 300);
+            const playNote = chaosMode ? 
+              scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)] : 
+              noteInfo;
+            window.sounds.playTone(playNote.freq, 300);
             button.style.transform = 'scale(0.95)';
             setTimeout(() => button.style.transform = '', 150);
           };
           button.onmouseenter = () => {
-            window.sounds.playTone(noteInfo.freq, 150);
+            if (chaosMode) {
+              // In chaos mode, play random notes
+              const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
+              window.sounds.playTone(randomNote.freq, 150);
+              button.style.background = `linear-gradient(135deg, ${randomNote.color}, ${randomNote.color}dd)`;
+            } else {
+              // Normal mode
+              window.sounds.playTone(noteInfo.freq, 150);
+            }
             button.style.transform = 'scale(1.05)';
             button.style.boxShadow = '3px 3px 0px var(--black)';
           };
           button.onmouseleave = () => {
             button.style.transform = '';
             button.style.boxShadow = '';
+            // Reset to original color
+            button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
           };
           scaleButtons.appendChild(button);
         });
         
-        // Add random button at the end
-        const randomButton = document.createElement('button');
-        randomButton.className = 'gradient-button';
-        randomButton.style.background = 'linear-gradient(135deg, #FF00FF, #00FFFF)';
-        randomButton.innerHTML = '<span>🎲</span>';
-        randomButton.onclick = () => {
-          const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
-          window.sounds.playTone(randomNote.freq, 300);
-          randomButton.style.transform = 'scale(0.95)';
-          setTimeout(() => randomButton.style.transform = '', 150);
+        // Add play/pause button at the end
+        const playButton = document.createElement('button');
+        playButton.className = 'gradient-button';
+        playButton.style.background = 'linear-gradient(135deg, #4CAF50, #8BC34A)';
+        playButton.innerHTML = '<span>▶️</span>';
+        
+        playButton.onclick = () => {
+          if (isPlaying) {
+            // Stop playing
+            isPlaying = false;
+            clearInterval(playInterval);
+            playButton.innerHTML = '<span>▶️</span>';
+            playButton.style.background = 'linear-gradient(135deg, #4CAF50, #8BC34A)';
+          } else {
+            // Start playing random notes
+            isPlaying = true;
+            playButton.innerHTML = '<span>⏸</span>';
+            playButton.style.background = 'linear-gradient(135deg, #FF5722, #FFC107)';
+            
+            const playRandomNote = () => {
+              if (!isPlaying) return;
+              const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
+              window.sounds.playTone(randomNote.freq, 150);
+              // Animate a random button
+              const randomBtn = scaleButtons.children[Math.floor(Math.random() * scales[scaleName].length)];
+              if (randomBtn) {
+                randomBtn.style.transform = 'scale(1.1)';
+                randomBtn.style.background = `linear-gradient(135deg, ${randomNote.color}, ${randomNote.color}dd)`;
+                setTimeout(() => {
+                  randomBtn.style.transform = '';
+                  const originalIndex = Array.from(scaleButtons.children).indexOf(randomBtn);
+                  if (originalIndex < scales[scaleName].length) {
+                    randomBtn.style.background = `linear-gradient(135deg, ${scales[scaleName][originalIndex].color}, ${scales[scaleName][originalIndex].color}dd)`;
+                  }
+                }, 150);
+              }
+            };
+            
+            playRandomNote(); // Play immediately
+            playInterval = setInterval(playRandomNote, 250); // Then every 250ms
+          }
         };
         
-        let hoverInterval;
-        randomButton.onmouseenter = () => {
-          // Play random notes continuously while hovering
-          const playRandomNote = () => {
-            const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
-            window.sounds.playTone(randomNote.freq, 150);
-            randomButton.style.background = `linear-gradient(135deg, ${randomNote.color}, ${randomNote.color}dd)`;
-          };
-          playRandomNote(); // Play immediately
-          hoverInterval = setInterval(playRandomNote, 200); // Then every 200ms
-          randomButton.style.transform = 'scale(1.05)';
-          randomButton.style.boxShadow = '3px 3px 0px var(--black)';
-        };
-        randomButton.onmouseleave = () => {
-          clearInterval(hoverInterval);
-          randomButton.style.transform = '';
-          randomButton.style.boxShadow = '';
-          randomButton.style.background = 'linear-gradient(135deg, #FF00FF, #00FFFF)';
-        };
-        
-        scaleButtons.appendChild(randomButton);
+        scaleButtons.appendChild(playButton);
         
         // Play the scale automatically
         scales[scaleName].forEach((noteInfo, index) => {
