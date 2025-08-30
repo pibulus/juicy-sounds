@@ -323,17 +323,6 @@
         line-height: 1.6;
       }
       
-      .typewriter-input {
-        background: transparent;
-        border: none;
-        outline: none;
-        width: 100%;
-        font-family: 'Courier New', monospace;
-        font-size: 1.1rem;
-        line-height: 1.6;
-        color: var(--text);
-      }
-      
       .typewriter-text {
         display: inline;
       }
@@ -705,44 +694,20 @@
         </div>
       </section>
       
-      <!-- Musical Scale Demo -->
-      <section class="gradient-demo" style="margin-bottom: 2.5rem;">
-        <div class="section-header">
-          <h2>musical scales</h2>
-          <p>test the tone engine with real notes</p>
-        </div>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
-          <button class="style-button" onclick="playScale('major')">C Major</button>
-          <button class="style-button" onclick="playScale('minor')">A Minor</button>
-          <button class="style-button" onclick="playScale('pentatonic')">Pentatonic</button>
-          <button class="style-button" onclick="playScale('blues')">Blues</button>
-          <button class="style-button" onclick="playScale('minecraft')">Minecraft</button>
-          <button class="style-button" onclick="playRandomScale()">🎲 Random</button>
-        </div>
-        <div class="gradient-buttons" id="scaleButtons">
-          <!-- Will be populated with note buttons -->
-        </div>
-      </section>
-      
       <!-- TypeWriter Demo -->
       <section class="typewriter-demo">
         <div class="section-header">
           <h2>typewriter engine</h2>
-          <p>type in the box or click a style for demo</p>
+          <p>realistic typing sounds. three styles.</p>
         </div>
         <div class="typewriter-screen">
-          <input type="text" 
-                 id="typewriterInput" 
-                 class="typewriter-input"
-                 placeholder="type here to test sounds...">
-          <span class="typewriter-text" id="typewriterText" style="display: none;"></span>
+          <span class="typewriter-text" id="typewriterText"></span>
           <span class="typewriter-cursor"></span>
         </div>
         <div class="typewriter-controls">
           <button class="style-button active" onclick="switchStyle('mechanical')">mechanical</button>
           <button class="style-button" onclick="switchStyle('soft')">soft touch</button>
           <button class="style-button" onclick="switchStyle('vintage')">vintage</button>
-          <button class="style-button" onclick="clearTypewriter()">clear</button>
         </div>
       </section>
       
@@ -866,38 +831,10 @@ sounds.play('success')  // that's it</pre>
         soundGrid.appendChild(button);
       });
       
-      // TypeWriter demo with input support
+      // TypeWriter demo - simplified
       let typewriterRunning = false;
       let currentStyle = 'mechanical';
       const demoText = "juicy sounds brings your interface to life with audio that actually feels good.";
-      
-      // Handle real typing input
-      const typewriterInput = document.getElementById('typewriterInput');
-      const typewriterText = document.getElementById('typewriterText');
-      
-      typewriterInput.addEventListener('keydown', (e) => {
-        // Play sound on key press (not for special keys)
-        if (e.key.length === 1 || e.key === 'Enter' || e.key === 'Backspace') {
-          if (e.key === 'Enter') {
-            window.sounds.play('success');
-          } else if (e.key === 'Backspace') {
-            window.sounds.play('close');
-          } else if (e.key === ' ') {
-            // Space bar - optional lighter sound
-          } else {
-            // Regular character
-            window.sounds.play('click');
-          }
-        }
-      });
-      
-      window.clearTypewriter = () => {
-        typewriterInput.value = '';
-        typewriterText.textContent = '';
-        typewriterInput.style.display = 'block';
-        typewriterText.style.display = 'none';
-        window.sounds.play('toggle');
-      };
       
       window.switchStyle = (style) => {
         currentStyle = style;
@@ -906,21 +843,19 @@ sounds.play('success')  // that's it</pre>
         );
         event.target.classList.add('active');
         
-        // Start demo typewriter
-        startDemoTypewriter();
+        // Start typewriter on button click
+        startTypewriter();
       };
       
-      function startDemoTypewriter() {
-        // Hide input, show text for demo
-        typewriterInput.style.display = 'none';
-        typewriterText.style.display = 'inline';
-        typewriterText.textContent = '';
+      function startTypewriter() {
+        const textEl = document.getElementById('typewriterText');
+        textEl.textContent = '';
         typewriterRunning = true;
         
         let i = 0;
         const typeInterval = setInterval(() => {
           if (i < demoText.length && typewriterRunning) {
-            typewriterText.textContent += demoText[i];
+            textEl.textContent += demoText[i];
             if (demoText[i] !== ' ') {
               window.sounds.play('click');
             }
@@ -928,142 +863,9 @@ sounds.play('success')  // that's it</pre>
           } else {
             clearInterval(typeInterval);
             typewriterRunning = false;
-            // After demo, switch back to input
-            setTimeout(() => {
-              typewriterInput.style.display = 'block';
-              typewriterText.style.display = 'none';
-              typewriterInput.value = demoText;
-            }, 2000);
           }
         }, 100);
       }
-      
-      // Musical scales functionality
-      const scales = {
-        major: [
-          { note: 'C', freq: 261.63, color: '#FF6B6B' },
-          { note: 'D', freq: 293.66, color: '#FF8E53' },
-          { note: 'E', freq: 329.63, color: '#FFB347' },
-          { note: 'F', freq: 349.23, color: '#FFD93D' },
-          { note: 'G', freq: 392.00, color: '#6BCF7F' },
-          { note: 'A', freq: 440.00, color: '#4ECDC4' },
-          { note: 'B', freq: 493.88, color: '#556270' },
-          { note: 'C↑', freq: 523.25, color: '#FF6B6B' }
-        ],
-        minor: [
-          { note: 'A', freq: 440.00, color: '#667EEA' },
-          { note: 'B', freq: 493.88, color: '#764BA2' },
-          { note: 'C', freq: 523.25, color: '#8B5CF6' },
-          { note: 'D', freq: 587.33, color: '#A78BFA' },
-          { note: 'E', freq: 659.25, color: '#C4B5FD' },
-          { note: 'F', freq: 698.46, color: '#DDD6FE' },
-          { note: 'G', freq: 783.99, color: '#EDE9FE' },
-          { note: 'A↑', freq: 880.00, color: '#667EEA' }
-        ],
-        pentatonic: [
-          { note: 'C', freq: 261.63, color: '#F093FB' },
-          { note: 'D', freq: 293.66, color: '#F5576C' },
-          { note: 'E', freq: 329.63, color: '#FA709A' },
-          { note: 'G', freq: 392.00, color: '#FEC0CE' },
-          { note: 'A', freq: 440.00, color: '#FFDDE1' },
-          { note: 'C↑', freq: 523.25, color: '#F093FB' }
-        ],
-        blues: [
-          { note: 'C', freq: 261.63, color: '#00D2FF' },
-          { note: 'E♭', freq: 311.13, color: '#3A86FF' },
-          { note: 'F', freq: 349.23, color: '#8338EC' },
-          { note: 'F#', freq: 369.99, color: '#C77DFF' },
-          { note: 'G', freq: 392.00, color: '#E0AAFF' },
-          { note: 'B♭', freq: 466.16, color: '#F2CC8F' },
-          { note: 'C↑', freq: 523.25, color: '#00D2FF' }
-        ],
-        minecraft: [
-          { note: 'E', freq: 329.63, color: '#7CB342' },
-          { note: 'G', freq: 392.00, color: '#66BB6A' },
-          { note: 'A', freq: 440.00, color: '#4DB6AC' },
-          { note: 'B', freq: 493.88, color: '#42A5F5' },
-          { note: 'C', freq: 523.25, color: '#5C6BC0' },
-          { note: 'D', freq: 587.33, color: '#7E57C2' },
-          { note: 'E↑', freq: 659.25, color: '#AB47BC' },
-          { note: 'G↑', freq: 783.99, color: '#7CB342' }
-        ]
-      };
-      
-      let currentScale = 'major';
-      
-      window.playRandomScale = () => {
-        const scaleNames = Object.keys(scales);
-        const randomScale = scaleNames[Math.floor(Math.random() * scaleNames.length)];
-        window.playScale(randomScale);
-      };
-      
-      window.playScale = (scaleName) => {
-        currentScale = scaleName;
-        const scaleButtons = document.getElementById('scaleButtons');
-        scaleButtons.innerHTML = '';
-        
-        // Mark active scale button
-        event.target.classList.add('active');
-        setTimeout(() => event.target.classList.remove('active'), 200);
-        
-        scales[scaleName].forEach((noteInfo, index) => {
-          const button = document.createElement('button');
-          button.className = 'gradient-button';
-          button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
-          button.innerHTML = `<span>${noteInfo.note}</span>`;
-          button.onclick = () => {
-            window.sounds.playTone(noteInfo.freq, 300);
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => button.style.transform = '', 150);
-          };
-          button.onmouseenter = () => {
-            window.sounds.playTone(noteInfo.freq, 150);
-            button.style.transform = 'scale(1.05)';
-            button.style.boxShadow = '3px 3px 0px var(--black)';
-          };
-          button.onmouseleave = () => {
-            button.style.transform = '';
-            button.style.boxShadow = '';
-          };
-          scaleButtons.appendChild(button);
-        });
-        
-        // Play the scale automatically
-        scales[scaleName].forEach((noteInfo, index) => {
-          setTimeout(() => {
-            window.sounds.playTone(noteInfo.freq, 200);
-            const btn = scaleButtons.children[index];
-            btn.style.transform = 'scale(1.1)';
-            setTimeout(() => btn.style.transform = '', 200);
-          }, index * 150);
-        });
-      };
-      
-      // Initialize with major scale
-      setTimeout(() => {
-        const scaleButtons = document.getElementById('scaleButtons');
-        scales.major.forEach((noteInfo) => {
-          const button = document.createElement('button');
-          button.className = 'gradient-button';
-          button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
-          button.innerHTML = `<span>${noteInfo.note}</span>`;
-          button.onclick = () => {
-            window.sounds.playTone(noteInfo.freq, 300);
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => button.style.transform = '', 150);
-          };
-          button.onmouseenter = () => {
-            window.sounds.playTone(noteInfo.freq, 150);
-            button.style.transform = 'scale(1.05)';
-            button.style.boxShadow = '3px 3px 0px var(--black)';
-          };
-          button.onmouseleave = () => {
-            button.style.transform = '';
-            button.style.boxShadow = '';
-          };
-          scaleButtons.appendChild(button);
-        });
-      }, 100);
       
       // Code tab switching
       const codeExamples = {

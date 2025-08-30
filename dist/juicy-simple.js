@@ -49,14 +49,19 @@ class JuicySounds {
     osc.connect(gain);
     gain.connect(ctx.destination);
     
+    osc.type = 'sine'; // cleaner sound
     osc.frequency.value = freq;
-    gain.gain.value = this.volume * 0.3;
     
-    osc.start();
-    setTimeout(() => {
-      osc.stop();
-      setTimeout(() => ctx.close(), 100);
-    }, duration);
+    // Start at 0, fade in quickly, sustain, then fade out
+    const now = ctx.currentTime;
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(this.volume * 0.15, now + 0.01); // Quick fade in, lower volume
+    gain.gain.linearRampToValueAtTime(this.volume * 0.15, now + (duration / 1000) - 0.01);
+    gain.gain.linearRampToValueAtTime(0, now + (duration / 1000)); // Fade out
+    
+    osc.start(now);
+    osc.stop(now + (duration / 1000));
+    setTimeout(() => ctx.close(), duration + 100);
   }
 
   createTypewriter() {
