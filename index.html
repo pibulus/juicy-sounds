@@ -717,7 +717,8 @@
           <button class="style-button" onclick="playScale('pentatonic')">Pentatonic</button>
           <button class="style-button" onclick="playScale('blues')">Blues</button>
           <button class="style-button" onclick="playScale('minecraft')">Minecraft</button>
-          <button class="style-button" id="chaosMode" onclick="toggleChaosMode()">🎲 Chaos</button>
+          <button class="style-button" id="chaosMode" onclick="toggleChaosMode()" style="background: var(--eggshell); border-style: dashed;">Random</button>
+          <button class="style-button" id="playButton" onclick="toggleAutoPlay()" style="padding: 0.5rem 1rem; min-width: auto;">▶️</button>
         </div>
         <div class="gradient-buttons" id="scaleButtons">
           <!-- Will be populated with note buttons -->
@@ -998,14 +999,44 @@ sounds.play('success')  // that's it</pre>
         chaosMode = !chaosMode;
         const chaosBtn = document.getElementById('chaosMode');
         if (chaosMode) {
-          chaosBtn.classList.add('active');
-          chaosBtn.style.background = 'linear-gradient(135deg, #FF00FF, #00FFFF)';
+          chaosBtn.style.background = 'var(--mint)';
+          chaosBtn.style.borderStyle = 'solid';
         } else {
-          chaosBtn.classList.remove('active');
-          chaosBtn.style.background = '';
+          chaosBtn.style.background = 'var(--eggshell)';
+          chaosBtn.style.borderStyle = 'dashed';
         }
-        // Regenerate current scale with new mode
-        window.playScale(currentScale);
+      };
+      
+      window.toggleAutoPlay = () => {
+        const playBtn = document.getElementById('playButton');
+        if (isPlaying) {
+          // Stop playing
+          isPlaying = false;
+          clearInterval(playInterval);
+          playBtn.innerHTML = '▶️';
+        } else {
+          // Start playing random notes
+          isPlaying = true;
+          playBtn.innerHTML = '⏸';
+          
+          const playRandomNote = () => {
+            if (!isPlaying) return;
+            const randomNote = scales[currentScale][Math.floor(Math.random() * scales[currentScale].length)];
+            window.sounds.playTone(randomNote.freq, 150);
+            // Animate a random button
+            const scaleButtons = document.getElementById('scaleButtons');
+            const randomBtn = scaleButtons.children[Math.floor(Math.random() * scales[currentScale].length)];
+            if (randomBtn) {
+              randomBtn.style.transform = 'scale(1.1)';
+              setTimeout(() => {
+                randomBtn.style.transform = '';
+              }, 150);
+            }
+          };
+          
+          playRandomNote(); // Play immediately
+          playInterval = setInterval(playRandomNote, 250); // Then every 250ms
+        }
       };
       
       window.playScale = (scaleName) => {
@@ -1040,10 +1071,9 @@ sounds.play('success')  // that's it</pre>
           };
           button.onmouseenter = () => {
             if (chaosMode) {
-              // In chaos mode, play random notes
+              // In random mode, play random notes but keep original color
               const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
               window.sounds.playTone(randomNote.freq, 150);
-              button.style.background = `linear-gradient(135deg, ${randomNote.color}, ${randomNote.color}dd)`;
             } else {
               // Normal mode
               window.sounds.playTone(noteInfo.freq, 150);
@@ -1054,56 +1084,10 @@ sounds.play('success')  // that's it</pre>
           button.onmouseleave = () => {
             button.style.transform = '';
             button.style.boxShadow = '';
-            // Reset to original color
-            button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
           };
           scaleButtons.appendChild(button);
         });
         
-        // Add play/pause button at the end
-        const playButton = document.createElement('button');
-        playButton.className = 'gradient-button';
-        playButton.style.background = 'linear-gradient(135deg, #4CAF50, #8BC34A)';
-        playButton.innerHTML = '<span>▶️</span>';
-        
-        playButton.onclick = () => {
-          if (isPlaying) {
-            // Stop playing
-            isPlaying = false;
-            clearInterval(playInterval);
-            playButton.innerHTML = '<span>▶️</span>';
-            playButton.style.background = 'linear-gradient(135deg, #4CAF50, #8BC34A)';
-          } else {
-            // Start playing random notes
-            isPlaying = true;
-            playButton.innerHTML = '<span>⏸</span>';
-            playButton.style.background = 'linear-gradient(135deg, #FF5722, #FFC107)';
-            
-            const playRandomNote = () => {
-              if (!isPlaying) return;
-              const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
-              window.sounds.playTone(randomNote.freq, 150);
-              // Animate a random button
-              const randomBtn = scaleButtons.children[Math.floor(Math.random() * scales[scaleName].length)];
-              if (randomBtn) {
-                randomBtn.style.transform = 'scale(1.1)';
-                randomBtn.style.background = `linear-gradient(135deg, ${randomNote.color}, ${randomNote.color}dd)`;
-                setTimeout(() => {
-                  randomBtn.style.transform = '';
-                  const originalIndex = Array.from(scaleButtons.children).indexOf(randomBtn);
-                  if (originalIndex < scales[scaleName].length) {
-                    randomBtn.style.background = `linear-gradient(135deg, ${scales[scaleName][originalIndex].color}, ${scales[scaleName][originalIndex].color}dd)`;
-                  }
-                }, 150);
-              }
-            };
-            
-            playRandomNote(); // Play immediately
-            playInterval = setInterval(playRandomNote, 250); // Then every 250ms
-          }
-        };
-        
-        scaleButtons.appendChild(playButton);
         
         // Play the scale automatically
         scales[scaleName].forEach((noteInfo, index) => {
