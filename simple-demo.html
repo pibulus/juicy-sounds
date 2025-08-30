@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎹 Juicy Typing - Simple Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      resize: vertical;
+      transition: all 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: 2px solid #667eea;
+      background: white;
+      color: #667eea;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    button.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .volume {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      width: 100px;
+    }
+
+    .info {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      color: #666;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .loading {
+      color: #667eea;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎹 Real Mechanical Keyboard Sounds</h1>
+    <p class="subtitle">Cherry MX Black Linear Switches</p>
+    
+    <textarea 
+      id="typingArea" 
+      placeholder="Start typing to hear real mechanical keyboard sounds...
+
+Every key has its own unique sound recorded from actual Cherry MX Black switches!
+
+Try typing fast, slow, or mashing keys - it handles everything perfectly."
+      autofocus
+    ></textarea>
+    
+    <div class="controls">
+      <button id="toggleBtn">Sound: ON</button>
+      <div class="volume">
+        <label>Volume:</label>
+        <input type="range" id="volumeSlider" min="0" max="100" value="30">
+        <span id="volumeLabel">30%</span>
+      </div>
+    </div>
+    
+    <div class="info">
+      <span id="status" class="loading">Loading keyboard sounds...</span>
+    </div>
+  </div>
+
+  <script type="module">
+    import SimpleTypeWriter from './src/SimpleTypeWriter.js';
+    
+    // Create typewriter instance
+    const typewriter = new SimpleTypeWriter({
+      volume: 0.3,
+      enabled: true
+    });
+    
+    // Initialize and attach
+    async function init() {
+      const status = document.getElementById('status');
+      
+      try {
+        await typewriter.init();
+        typewriter.attach('#typingArea');
+        status.textContent = '✅ Ready! 88 unique key sounds loaded';
+        status.className = '';
+      } catch (error) {
+        status.textContent = '❌ Failed to load sounds';
+        status.className = '';
+      }
+    }
+    
+    // Toggle button
+    const toggleBtn = document.getElementById('toggleBtn');
+    let enabled = true;
+    
+    toggleBtn.addEventListener('click', () => {
+      enabled = !enabled;
+      if (enabled) {
+        typewriter.enable();
+        toggleBtn.textContent = 'Sound: ON';
+        toggleBtn.classList.add('active');
+      } else {
+        typewriter.disable();
+        toggleBtn.textContent = 'Sound: OFF';
+        toggleBtn.classList.remove('active');
+      }
+    });
+    
+    // Volume control
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeLabel = document.getElementById('volumeLabel');
+    
+    volumeSlider.addEventListener('input', () => {
+      const volume = volumeSlider.value / 100;
+      typewriter.setVolume(volume);
+      volumeLabel.textContent = `${volumeSlider.value}%`;
+    });
+    
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>

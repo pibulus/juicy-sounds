@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎹 Mechanical Keyboard Sound Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 700px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .pack-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .pack-card {
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .pack-card:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .pack-card.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+    }
+
+    .pack-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+
+    .pack-card .description {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    .pack-card .specs {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 250px;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      resize: vertical;
+      transition: all 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: 2px solid #667eea;
+      background: white;
+      color: #667eea;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    button.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .volume {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      width: 100px;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .status.loading {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status.ready {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .keyboard-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .pack-selector {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎹 Real Mechanical Keyboard Sounds</h1>
+    <p class="subtitle">Choose your switch type and start typing!</p>
+    
+    <div class="pack-selector">
+      <div class="pack-card active" data-pack="cherry-mx-black">
+        <div class="keyboard-icon">⌨️</div>
+        <h3>Cherry MX Black</h3>
+        <div class="description">Linear & Smooth</div>
+        <div class="specs">2.5MB • 88 keys</div>
+      </div>
+      
+      <div class="pack-card" data-pack="cherry-mx-blue">
+        <div class="keyboard-icon">🔵</div>
+        <h3>Cherry MX Blue</h3>
+        <div class="description">Clicky & Tactile</div>
+        <div class="specs">2.0MB • 88 keys</div>
+      </div>
+      
+      <div class="pack-card" data-pack="topre">
+        <div class="keyboard-icon">🟣</div>
+        <h3>Topre Purple</h3>
+        <div class="description">Thocky Premium</div>
+        <div class="specs">1.5MB • 88 keys</div>
+      </div>
+    </div>
+    
+    <textarea 
+      id="typingArea" 
+      placeholder="Start typing to hear real mechanical keyboard sounds...
+
+Each keyboard has its own unique character:
+• Cherry MX Black - Smooth linear switches, no tactile bump
+• Cherry MX Blue - Classic clicky switches with tactile feedback
+• Topre Purple - Premium thocky sound, hybrid capacitive
+
+Try typing fast, slow, or holding keys - every sound is recorded from real keyboards!"
+      autofocus
+    ></textarea>
+    
+    <div class="controls">
+      <button id="toggleBtn" class="active">Sound: ON</button>
+      <div class="volume">
+        <label>Volume:</label>
+        <input type="range" id="volumeSlider" min="0" max="100" value="30">
+        <span id="volumeLabel">30%</span>
+      </div>
+    </div>
+    
+    <div class="status" id="status">
+      Loading Cherry MX Black sounds...
+    </div>
+  </div>
+
+  <script type="module">
+    import SimpleTypeWriter from './src/SimpleTypeWriter.js';
+    
+    // Create typewriter instance
+    const typewriter = new SimpleTypeWriter({
+      volume: 0.3,
+      enabled: true,
+      pack: 'cherry-mx-black'
+    });
+    
+    // Elements
+    const status = document.getElementById('status');
+    const packCards = document.querySelectorAll('.pack-card');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeLabel = document.getElementById('volumeLabel');
+    
+    let currentPack = 'cherry-mx-black';
+    
+    // Initialize
+    async function init() {
+      status.className = 'status loading';
+      status.textContent = 'Loading Cherry MX Black sounds...';
+      
+      try {
+        await typewriter.init();
+        typewriter.attach('#typingArea');
+        status.className = 'status ready';
+        status.textContent = '✅ Cherry MX Black loaded - Start typing!';
+      } catch (error) {
+        status.className = 'status';
+        status.textContent = '❌ Failed to load sounds';
+      }
+    }
+    
+    // Pack selection
+    packCards.forEach(card => {
+      card.addEventListener('click', async () => {
+        const pack = card.dataset.pack;
+        if (pack === currentPack) return;
+        
+        // Update UI
+        packCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        
+        // Load new pack
+        const packNames = {
+          'cherry-mx-black': 'Cherry MX Black',
+          'cherry-mx-blue': 'Cherry MX Blue',
+          'topre': 'Topre Purple'
+        };
+        
+        status.className = 'status loading';
+        status.textContent = `Loading ${packNames[pack]} sounds...`;
+        
+        try {
+          await typewriter.setPack(pack);
+          currentPack = pack;
+          status.className = 'status ready';
+          status.textContent = `✅ ${packNames[pack]} loaded - Start typing!`;
+        } catch (error) {
+          status.className = 'status';
+          status.textContent = `❌ Failed to load ${packNames[pack]}`;
+        }
+      });
+    });
+    
+    // Toggle button
+    let enabled = true;
+    toggleBtn.addEventListener('click', () => {
+      enabled = !enabled;
+      if (enabled) {
+        typewriter.enable();
+        toggleBtn.textContent = 'Sound: ON';
+        toggleBtn.classList.add('active');
+      } else {
+        typewriter.disable();
+        toggleBtn.textContent = 'Sound: OFF';
+        toggleBtn.classList.remove('active');
+      }
+    });
+    
+    // Volume control
+    volumeSlider.addEventListener('input', () => {
+      const volume = volumeSlider.value / 100;
+      typewriter.setVolume(volume);
+      volumeLabel.textContent = `${volumeSlider.value}%`;
+    });
+    
+    // Initialize on load
+    init();
+    
+    // Focus textarea
+    document.getElementById('typingArea').focus();
+  </script>
+</body>
+</html>

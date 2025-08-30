@@ -728,21 +728,21 @@
       <!-- TypeWriter Demo -->
       <section class="typewriter-demo">
         <div class="section-header">
-          <h2>typewriter engine</h2>
-          <p>type in the box or click a style for demo</p>
+          <h2>real keyboard sounds</h2>
+          <p>type in the box or click a keyboard to hear it</p>
         </div>
         <div class="typewriter-screen">
           <input type="text" 
                  id="typewriterInput" 
                  class="typewriter-input"
-                 placeholder="type here to test sounds...">
+                 placeholder="type here to test real mechanical keyboard sounds...">
           <span class="typewriter-text" id="typewriterText" style="display: none;"></span>
           <span class="typewriter-cursor"></span>
         </div>
         <div class="typewriter-controls">
-          <button class="style-button active" onclick="switchStyle('mechanical')">mechanical</button>
-          <button class="style-button" onclick="switchStyle('soft')">soft touch</button>
-          <button class="style-button" onclick="switchStyle('vintage')">vintage</button>
+          <button class="style-button active" onclick="switchKeyboard('cherry-mx-black')" title="Linear & smooth">Cherry Black</button>
+          <button class="style-button" onclick="switchKeyboard('cherry-mx-blue')" title="Clicky & tactile">Cherry Blue</button>
+          <button class="style-button" onclick="switchKeyboard('topre')" title="Thocky premium">Topre</button>
           <button class="style-button" onclick="clearTypewriter()">clear</button>
         </div>
       </section>
@@ -791,14 +791,29 @@ sounds.play('success')  // that's it</pre>
     
     <!-- Scripts -->
     <script type="module">
-      // Import working library
+      // Import working library and keyboard sounds
       import JuicySounds from './dist/juicy-simple.js';
+      import SimpleTypeWriter from './src/SimpleTypeWriter.js';
       
       // Initialize globally
       window.sounds = new JuicySounds({
         volume: 0.7,
         basePath: './sounds/interface/'
       });
+      
+      // Initialize keyboard sounds
+      window.keyboard = new SimpleTypeWriter({
+        volume: 0.3,
+        enabled: true,
+        pack: 'cherry-mx-black'
+      });
+      
+      // Initialize keyboard on first load
+      (async () => {
+        await window.keyboard.init();
+        window.keyboard.attach('#typewriterInput');
+        console.log('🎹 Keyboard sounds loaded!');
+      })();
       
       console.log('JuicySounds loaded!');
       
@@ -867,30 +882,14 @@ sounds.play('success')  // that's it</pre>
         soundGrid.appendChild(button);
       });
       
-      // TypeWriter demo with input support
+      // TypeWriter demo with real keyboard sounds
       let typewriterRunning = false;
-      let currentStyle = 'mechanical';
-      const demoText = "juicy sounds brings your interface to life with audio that actually feels good.";
+      let currentPack = 'cherry-mx-black';
+      const demoText = "juicy sounds brings your interface to life with real mechanical keyboard sounds.";
       
-      // Handle real typing input
+      // Handle real typing input - keyboard sounds are now handled by SimpleTypeWriter
       const typewriterInput = document.getElementById('typewriterInput');
       const typewriterText = document.getElementById('typewriterText');
-      
-      typewriterInput.addEventListener('keydown', (e) => {
-        // Play sound on key press (not for special keys)
-        if (e.key.length === 1 || e.key === 'Enter' || e.key === 'Backspace') {
-          if (e.key === 'Enter') {
-            window.sounds.play('success');
-          } else if (e.key === 'Backspace') {
-            window.sounds.play('close');
-          } else if (e.key === ' ') {
-            // Space bar - optional lighter sound
-          } else {
-            // Regular character
-            window.sounds.play('click');
-          }
-        }
-      });
       
       window.clearTypewriter = () => {
         typewriterInput.value = '';
@@ -900,12 +899,17 @@ sounds.play('success')  // that's it</pre>
         window.sounds.play('toggle');
       };
       
-      window.switchStyle = (style) => {
-        currentStyle = style;
-        document.querySelectorAll('.style-button').forEach(b => 
+      window.switchKeyboard = async (pack) => {
+        currentPack = pack;
+        
+        // Update button states
+        document.querySelectorAll('.typewriter-controls .style-button').forEach(b => 
           b.classList.remove('active')
         );
         event.target.classList.add('active');
+        
+        // Switch keyboard pack
+        await window.keyboard.setPack(pack);
         
         // Start demo typewriter
         startDemoTypewriter();
@@ -919,12 +923,18 @@ sounds.play('success')  // that's it</pre>
         typewriterRunning = true;
         
         let i = 0;
-        const typeInterval = setInterval(() => {
+        const typeInterval = setInterval(async () => {
           if (i < demoText.length && typewriterRunning) {
-            typewriterText.textContent += demoText[i];
-            if (demoText[i] !== ' ') {
-              window.sounds.play('click');
-            }
+            const char = demoText[i];
+            typewriterText.textContent += char;
+            
+            // Create a fake keyboard event to trigger the real keyboard sounds
+            const fakeEvent = {
+              key: char,
+              keyCode: char.charCodeAt(0)
+            };
+            await window.keyboard.play(fakeEvent);
+            
             i++;
           } else {
             clearInterval(typeInterval);
