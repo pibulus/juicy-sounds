@@ -4,6 +4,40 @@ class JuicySounds {
     this.volume = config.volume || 0.7;
     this.basePath = config.basePath || './sounds/interface/';
     this.cache = {};
+    this.preloadCache = {}; // Store preloaded audio elements
+  }
+
+  // Preload a sound into memory
+  preload(soundName) {
+    // Don't preload twice
+    if (this.preloadCache[soundName]) return;
+    
+    // Map of sound names to files
+    const files = {
+      click: 'click_001.ogg',
+      hover: 'select_001.ogg',
+      success: 'confirmation_001.ogg',
+      error: 'error_001.ogg',
+      notification: 'glass_001.ogg',
+      toggle: 'switch_001.ogg',
+      open: 'open_001.ogg',
+      close: 'close_001.ogg',
+      bong: 'bong_001.ogg',
+      glass: 'glass_001.ogg',
+      pluck: 'pluck_001.ogg',
+      select: 'select_001.ogg'
+    };
+    
+    const filename = files[soundName] || soundName;
+    const url = this.basePath + filename;
+    
+    // Create and load the audio
+    const audio = new Audio(url);
+    audio.preload = 'auto';
+    audio.volume = this.volume;
+    
+    // Store in cache
+    this.preloadCache[soundName] = audio;
   }
 
   play(soundName) {
@@ -26,7 +60,17 @@ class JuicySounds {
     const filename = files[soundName] || soundName;
     const url = this.basePath + filename;
     
-    // Create new audio each time (simple but works)
+    // Use preloaded audio if available
+    if (this.preloadCache[soundName]) {
+      const cachedAudio = this.preloadCache[soundName];
+      // Clone the audio element for overlapping sounds
+      const audio = cachedAudio.cloneNode();
+      audio.volume = this.volume;
+      audio.play().catch(() => {});
+      return;
+    }
+    
+    // Create new audio if not preloaded
     const audio = new Audio(url);
     audio.volume = this.volume;
     audio.play().catch(() => {

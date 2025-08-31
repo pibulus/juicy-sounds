@@ -875,6 +875,12 @@ sounds.play('success')  // that's it</pre>
         const button = document.createElement('button');
         button.className = 'sound-button';
         button.innerHTML = `<span class="sound-name">${sound}</span>`;
+        
+        // Preload on hover for instant playback
+        button.onmouseenter = () => {
+          window.sounds.preload(sound);
+        };
+        
         button.onclick = () => {
           // Remove playing class from all
           document.querySelectorAll('.sound-button').forEach(b => 
@@ -905,6 +911,13 @@ sounds.play('success')  // that's it</pre>
         typewriterCursor.classList.remove('active');
         window.sounds.play('toggle');
       };
+      
+      // Preload common UI sounds on page load
+      setTimeout(() => {
+        ['click', 'success', 'toggle', 'error'].forEach(sound => {
+          window.sounds.preload(sound);
+        });
+      }, 500);
       
       window.switchKeyboard = async (pack) => {
         currentPack = pack;
