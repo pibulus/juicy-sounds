@@ -316,11 +316,12 @@
         background: var(--eggshell);
         border: 2px solid var(--black);
         border-radius: 6px;
-        padding: 1.5rem;
-        min-height: 150px;
+        padding: 1.25rem;
+        min-height: 80px;
         font-family: 'Courier New', monospace;
-        font-size: 1.1rem;
-        line-height: 1.6;
+        font-size: 1rem;
+        line-height: 1.5;
+        position: relative;
       }
       
       .typewriter-input {
@@ -329,8 +330,8 @@
         outline: none;
         width: 100%;
         font-family: 'Courier New', monospace;
-        font-size: 1.1rem;
-        line-height: 1.6;
+        font-size: 1rem;
+        line-height: 1.5;
         color: var(--text);
       }
       
@@ -339,13 +340,17 @@
       }
       
       .typewriter-cursor {
-        display: inline-block;
+        display: none; /* Hidden by default */
         width: 2px;
         height: 1.2em;
         background: var(--text);
         animation: blink 1s infinite;
         vertical-align: text-bottom;
         margin-left: 2px;
+      }
+      
+      .typewriter-cursor.active {
+        display: inline-block; /* Only show during demo */
       }
       
       @keyframes blink {
@@ -735,7 +740,7 @@
           <input type="text" 
                  id="typewriterInput" 
                  class="typewriter-input"
-                 placeholder="type here to test real mechanical keyboard sounds...">
+                 placeholder="start typing...">
           <span class="typewriter-text" id="typewriterText" style="display: none;"></span>
           <span class="typewriter-cursor"></span>
         </div>
@@ -890,12 +895,14 @@ sounds.play('success')  // that's it</pre>
       // Handle real typing input - keyboard sounds are now handled by SimpleTypeWriter
       const typewriterInput = document.getElementById('typewriterInput');
       const typewriterText = document.getElementById('typewriterText');
+      const typewriterCursor = document.querySelector('.typewriter-cursor');
       
       window.clearTypewriter = () => {
         typewriterInput.value = '';
         typewriterText.textContent = '';
         typewriterInput.style.display = 'block';
         typewriterText.style.display = 'none';
+        typewriterCursor.classList.remove('active');
         window.sounds.play('toggle');
       };
       
@@ -916,10 +923,11 @@ sounds.play('success')  // that's it</pre>
       };
       
       function startDemoTypewriter() {
-        // Hide input, show text for demo
+        // Hide input, show text and cursor for demo
         typewriterInput.style.display = 'none';
         typewriterText.style.display = 'inline';
         typewriterText.textContent = '';
+        typewriterCursor.classList.add('active'); // Show cursor during demo
         typewriterRunning = true;
         
         let i = 0;
@@ -943,7 +951,9 @@ sounds.play('success')  // that's it</pre>
             setTimeout(() => {
               typewriterInput.style.display = 'block';
               typewriterText.style.display = 'none';
+              typewriterCursor.classList.remove('active'); // Hide cursor
               typewriterInput.value = demoText;
+              typewriterInput.focus(); // Focus the input so user can start typing
             }, 2000);
           }
         }, 100);
