@@ -316,12 +316,13 @@
         background: var(--eggshell);
         border: 2px solid var(--black);
         border-radius: 6px;
-        padding: 1.25rem;
-        min-height: 80px;
+        padding: 1.5rem;
+        min-height: 120px;
         font-family: 'Courier New', monospace;
-        font-size: 1rem;
-        line-height: 1.5;
+        font-size: 1.1rem;
+        line-height: 1.6;
         position: relative;
+        cursor: text;
       }
       
       .typewriter-input {
@@ -329,10 +330,13 @@
         border: none;
         outline: none;
         width: 100%;
+        height: 100%;
+        min-height: 90px;
         font-family: 'Courier New', monospace;
-        font-size: 1rem;
-        line-height: 1.5;
+        font-size: 1.1rem;
+        line-height: 1.6;
         color: var(--text);
+        resize: none;
       }
       
       .typewriter-text {
@@ -736,11 +740,10 @@
           <h2>real keyboard sounds</h2>
           <p>type in the box or click a keyboard to hear it</p>
         </div>
-        <div class="typewriter-screen">
-          <input type="text" 
-                 id="typewriterInput" 
-                 class="typewriter-input"
-                 placeholder="start typing...">
+        <div class="typewriter-screen" onclick="document.getElementById('typewriterInput').focus()">
+          <textarea id="typewriterInput" 
+                    class="typewriter-input"
+                    placeholder="start typing to hear real mechanical keyboard sounds..."></textarea>
           <span class="typewriter-text" id="typewriterText" style="display: none;"></span>
           <span class="typewriter-cursor"></span>
         </div>
@@ -896,7 +899,7 @@ sounds.play('success')  // that's it</pre>
       // TypeWriter demo with real keyboard sounds
       let typewriterRunning = false;
       let currentPack = 'cherry-mx-black';
-      const demoText = "juicy sounds brings your interface to life with real mechanical keyboard sounds.";
+      const demoText = "actual keyboards. actual vibes. zero latency.";
       
       // Handle real typing input - keyboard sounds are now handled by SimpleTypeWriter
       const typewriterInput = document.getElementById('typewriterInput');
@@ -906,7 +909,7 @@ sounds.play('success')  // that's it</pre>
       window.clearTypewriter = () => {
         typewriterInput.value = '';
         typewriterText.textContent = '';
-        typewriterInput.style.display = 'block';
+        typewriterInput.style.visibility = 'visible';
         typewriterText.style.display = 'none';
         typewriterCursor.classList.remove('active');
         window.sounds.play('toggle');
@@ -936,8 +939,8 @@ sounds.play('success')  // that's it</pre>
       };
       
       function startDemoTypewriter() {
-        // Hide input, show text and cursor for demo
-        typewriterInput.style.display = 'none';
+        // Hide input using visibility to maintain layout, show text and cursor for demo
+        typewriterInput.style.visibility = 'hidden';
         typewriterText.style.display = 'inline';
         typewriterText.textContent = '';
         typewriterCursor.classList.add('active'); // Show cursor during demo
@@ -962,7 +965,7 @@ sounds.play('success')  // that's it</pre>
             typewriterRunning = false;
             // After demo, switch back to input
             setTimeout(() => {
-              typewriterInput.style.display = 'block';
+              typewriterInput.style.visibility = 'visible';
               typewriterText.style.display = 'none';
               typewriterCursor.classList.remove('active'); // Hide cursor
               typewriterInput.value = demoText;

@@ -8,11 +8,12 @@ export class SimpleTypeWriter {
     this.config = {
       volume: 0.3,
       enabled: true,
-      pack: 'cherry-mx-black', // Default pack
+      pack: 'cherry-mx-black',
+      basePath: './sounds/keyboard-packs/',
+      debug: false, // Enable console logging
       ...config
     };
-    
-    this.enabled = this.config.enabled;
+
     this.audioContext = null;
     this.audioBuffer = null;
     this.configData = null;
@@ -42,22 +43,43 @@ export class SimpleTypeWriter {
       }
       
       // Load the config and audio in parallel
-      const basePath = `./sounds/keyboard-packs/${pack}/`;
+      const basePath = `${this.config.basePath}${pack}/`;
       const [configResponse, audioResponse] = await Promise.all([
         fetch(basePath + 'config.json'),
         fetch(basePath + 'sound.ogg')
       ]);
-      
+
+      if (!configResponse.ok) {
+        throw new Error(`Config not found at ${basePath}config.json (HTTP ${configResponse.status})`);
+      }
+      if (!audioResponse.ok) {
+        throw new Error(`Audio not found at ${basePath}sound.ogg (HTTP ${audioResponse.status})`);
+      }
+
       this.configData = await configResponse.json();
       const arrayBuffer = await audioResponse.arrayBuffer();
       this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-      
+
       this.loaded = true;
       this.config.pack = pack;
-      console.log('🎹 Keyboard sounds loaded:', this.configData.name);
+      if (this.config.debug) {
+        console.log('🎹 Keyboard sounds loaded:', this.configData.name);
+      }
     } catch (error) {
-      console.error('Failed to load keyboard sounds:', error);
-      // Fail silently - typing still works without sounds
+      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.error('🎹 Failed to load keyboard sounds');
+      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.error('Pack:', pack);
+      console.error('Base path:', this.config.basePath);
+      console.error('Error:', error.message);
+      console.error('');
+      console.error('💡 Common fixes:');
+      console.error('  1. Check sound files exist in your static/public folder');
+      console.error('  2. For Fresh/Next/Vite: use basePath: "/sounds/keyboard-packs/"');
+      console.error('  3. For vanilla HTML: use basePath: "./sounds/keyboard-packs/"');
+      console.error('  4. Run testConnection() to debug path issues');
+      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      // Fail gracefully - typing still works without sounds
     }
   }
   
@@ -67,12 +89,48 @@ export class SimpleTypeWriter {
   async setPack(packName) {
     await this.init(packName);
   }
+
+  /**
+   * Test if sound files are accessible (useful for debugging integration issues)
+   */
+  async testConnection() {
+    const pack = this.config.pack;
+    const basePath = `${this.config.basePath}${pack}/`;
+    const configPath = basePath + 'config.json';
+
+    console.log('🎹 Testing keyboard sound connection...');
+    console.log('Pack:', pack);
+    console.log('Base path:', this.config.basePath);
+    console.log('Full config path:', configPath);
+
+    try {
+      const response = await fetch(configPath);
+      if (response.ok) {
+        const config = await response.json();
+        console.log('✅ Success! Found:', config.name);
+        console.log('Keys mapped:', Object.keys(config.defines).length);
+        return true;
+      } else {
+        console.error('❌ HTTP', response.status, '- Config file not found');
+        console.error('Check that sound files are copied to static/public folder');
+        console.error('Expected location:', configPath);
+        return false;
+      }
+    } catch (err) {
+      console.error('❌ Fetch failed:', err.message);
+      console.error('This usually means:');
+      console.error('  1. Sound files are not in the right location');
+      console.error('  2. basePath config is incorrect for your framework');
+      console.error('  3. CORS issues (unlikely with local files)');
+      return false;
+    }
+  }
   
   /**
    * Play a key sound
    */
-  async play(event) {
-    if (!this.enabled || !this.loaded) return;
+  play(event) {
+    if (!this.config.enabled || !this.loaded) return;
     
     // Map the key to a sound ID
     const keyId = this.getKeyId(event);
@@ -119,7 +177,6 @@ export class SimpleTypeWriter {
    */
   getKeyId(event) {
     const key = event.key;
-    const code = event.keyCode || event.which;
     
     // Special keys first
     const specialMap = {
@@ -152,7 +209,7 @@ export class SimpleTypeWriter {
     if (key >= '0' && key <= '9') {
       // Mechvibes uses 1-10 for number keys
       if (key === '0') return '11';
-      return String(parseInt(key) + 1);
+      return String(Number(key) + 1);
     }
     
     // Default fallback
@@ -172,14 +229,16 @@ export class SimpleTypeWriter {
     
     elements.forEach(element => {
       if (this.attachedElements.has(element)) return;
-      
+
       const handler = (e) => this.play(e);
       element.addEventListener('keydown', handler);
       element._typewriterHandler = handler;
       this.attachedElements.add(element);
     });
-    
-    console.log(`🎹 Keyboard sounds attached to ${elements.length} elements`);
+
+    if (this.config.debug) {
+      console.log(`🎹 Keyboard sounds attached to ${elements.length} elements`);
+    }
   }
   
   /**
@@ -198,8 +257,8 @@ export class SimpleTypeWriter {
   /**
    * Simple controls
    */
-  enable() { this.enabled = true; }
-  disable() { this.enabled = false; }
+  enable() { this.config.enabled = true; }
+  disable() { this.config.enabled = false; }
   setVolume(v) { this.config.volume = Math.max(0, Math.min(1, v)); }
   
   /**
