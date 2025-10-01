@@ -738,13 +738,13 @@
             <div class="gradient-demo" style="padding: 1.5rem;">
               <p style="margin-bottom: 1rem; font-size: 0.9rem; text-align: center;">gradient tones →</p>
               <div class="gradient-buttons">
-                <button class="gradient-button gradient-low" onclick="playTone(220)" onmouseenter="playTone(220, 50)">
+                <button class="gradient-button gradient-low" onclick="playTone(220)" aria-label="Play low tone (220 Hz)">
                   <span>low</span>
                 </button>
-                <button class="gradient-button gradient-mid" onclick="playTone(440)" onmouseenter="playTone(440, 50)">
+                <button class="gradient-button gradient-mid" onclick="playTone(440)" aria-label="Play mid tone (440 Hz)">
                   <span>mid</span>
                 </button>
-                <button class="gradient-button gradient-high" onclick="playTone(880)" onmouseenter="playTone(880, 50)">
+                <button class="gradient-button gradient-high" onclick="playTone(880)" aria-label="Play high tone (880 Hz)">
                   <span>high</span>
                 </button>
               </div>
@@ -909,7 +909,12 @@ sounds.play('success')  // that's it</pre>
       };
       
       window.setVolume = (val) => {
-        window.sounds.setVolume(val / 100);
+        const volume = val / 100;
+        window.sounds.setVolume(volume);
+        // Also update keyboard sounds volume
+        if (window.keyboard) {
+          window.keyboard.setVolume(volume * 0.3); // Keep keyboard quieter (30% of main volume)
+        }
         // Update ARIA attributes
         const slider = document.getElementById('volumeSlider');
         slider.setAttribute('aria-valuenow', val);
@@ -1202,21 +1207,28 @@ sounds.play('success')  // that's it</pre>
           scaleButtons.appendChild(button);
         });
         
-        
-        // Play the scale automatically
-        scales[scaleName].forEach((noteInfo, index) => {
-          setTimeout(() => {
-            window.sounds.playTone(noteInfo.freq, 200);
-            const btn = scaleButtons.children[index];
-            btn.style.transform = 'scale(1.1)';
-            setTimeout(() => btn.style.transform = '', 200);
-          }, index * 150);
-        });
+
+        // Don't auto-play - let user click to hear
       };
-      
-      // Initialize with major scale
+
+      // Initialize with major scale buttons (but don't play)
       setTimeout(() => {
-        window.playScale('major');
+        const scaleButtons = document.getElementById('scaleButtons');
+        scaleButtons.innerHTML = '';
+
+        scales['major'].forEach((noteInfo) => {
+          const button = document.createElement('button');
+          button.className = 'gradient-button';
+          button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
+          button.innerHTML = `<span>${noteInfo.note}</span>`;
+          button.setAttribute('aria-label', `Play note ${noteInfo.note}`);
+          button.onclick = () => {
+            window.sounds.playTone(noteInfo.freq, 300);
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => button.style.transform = '', 150);
+          };
+          scaleButtons.appendChild(button);
+        });
       }, 100);
       
       // Code tab switching
