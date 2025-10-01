@@ -3,9 +3,31 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>juicy sounds 🍊 ui audio that slaps</title>
-    <meta name="description" content="ui sounds that actually feel good. no corporate beeps. pure audio juice.">
-    
+    <title>Juicy Sounds - Mechanical Keyboard Sounds for Web Apps</title>
+    <meta name="description" content="Dead simple mechanical keyboard sounds and UI audio for web apps. Real Cherry MX recordings, framework-agnostic, plug and play. Works with Fresh, Next.js, Vite, React, vanilla JS.">
+    <meta name="keywords" content="keyboard sounds, mechanical keyboard, typing sounds, web audio, ui sounds, cherry mx, javascript, web components">
+    <meta name="author" content="Pablo Alvarado">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://juicy-sounds.dev">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://juicy-sounds.dev">
+    <meta property="og:title" content="Juicy Sounds - Mechanical Keyboard Sounds for Web Apps">
+    <meta property="og:description" content="Dead simple mechanical keyboard sounds for web apps. Real Cherry MX recordings, framework-agnostic, plug and play.">
+    <meta property="og:image" content="https://juicy-sounds.dev/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://juicy-sounds.dev">
+    <meta property="twitter:title" content="Juicy Sounds - Mechanical Keyboard Sounds for Web Apps">
+    <meta property="twitter:description" content="Dead simple mechanical keyboard sounds for web apps. Real Cherry MX recordings, framework-agnostic, plug and play.">
+    <meta property="twitter:image" content="https://juicy-sounds.dev/og-image.jpg">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#FFDAB9">
+
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍊</text></svg>">
     
@@ -13,6 +35,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Juicy Sounds",
+      "description": "Mechanical keyboard sounds and UI audio library for web applications",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
     
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -214,6 +253,15 @@
       .try-button:active {
         transform: translate(0px, 0px);
         box-shadow: 1px 1px 0px var(--black);
+      }
+
+      .try-button:focus,
+      .style-button:focus,
+      .sound-button:focus,
+      .gradient-button:focus,
+      .code-tab:focus {
+        outline: 3px solid var(--coral);
+        outline-offset: 2px;
       }
       
       /* Sound Grid - cleaner design */
@@ -661,10 +709,12 @@
     <div class="container">
       <header>
         <h1 class="logo">
-          <span class="juice">juicy</span> sounds 🍊
+          <span class="juice">juicy</span> sounds <span role="img" aria-label="orange">🍊</span>
         </h1>
         <p class="tagline">ui audio that actually feels good</p>
       </header>
+
+      <main>
       
       <!-- Hero Card -->
       <div class="hero-card">
@@ -680,8 +730,8 @@
               <li>typewriter engine</li>
               <li>lazy loads on demand</li>
             </ul>
-            <button class="try-button" onclick="playDemoSequence()">
-              feel the juice 🎵
+            <button class="try-button" onclick="playDemoSequence()" aria-label="Play demo sound sequence">
+              feel the juice <span role="img" aria-label="musical note">🎵</span>
             </button>
           </div>
           <div class="hero-demo">
@@ -704,12 +754,12 @@
       </div>
       
       <!-- Sound Grid -->
-      <section class="sound-grid-section">
+      <section class="sound-grid-section" aria-labelledby="sound-grid-heading">
         <div class="section-header">
-          <h2>pick your flavor</h2>
+          <h2 id="sound-grid-heading">pick your flavor</h2>
           <p>tap any sound to preview</p>
         </div>
-        <div class="sound-grid" id="soundGrid">
+        <div class="sound-grid" id="soundGrid" role="group" aria-label="Sound effect buttons">
           <!-- Populated by JS -->
         </div>
       </section>
@@ -735,24 +785,26 @@
       </section>
       
       <!-- TypeWriter Demo -->
-      <section class="typewriter-demo">
+      <section class="typewriter-demo" aria-labelledby="typewriter-heading">
         <div class="section-header">
-          <h2>real keyboard sounds</h2>
+          <h2 id="typewriter-heading">real keyboard sounds</h2>
           <p>type in the box or click a keyboard to hear it</p>
         </div>
         <div class="typewriter-screen" onclick="document.getElementById('typewriterInput').focus()">
-          <textarea id="typewriterInput" 
+          <textarea id="typewriterInput"
                     class="typewriter-input"
-                    placeholder="start typing to hear real mechanical keyboard sounds..."></textarea>
+                    placeholder="start typing to hear real mechanical keyboard sounds..."
+                    aria-label="Type here to hear mechanical keyboard sounds"></textarea>
           <span class="typewriter-text" id="typewriterText" style="display: none;"></span>
           <span class="typewriter-cursor"></span>
         </div>
         <div class="typewriter-controls">
           <button class="style-button active" onclick="switchKeyboard('cherry-mx-black')" title="Linear & smooth">Cherry Black</button>
-          <button class="style-button" onclick="switchKeyboard('cherry-mx-blue')" title="Clicky & tactile">Cherry Blue</button>
-          <button class="style-button" onclick="switchKeyboard('topre')" title="Thocky premium">Topre</button>
           <button class="style-button" onclick="clearTypewriter()">clear</button>
         </div>
+        <p style="text-align: center; color: var(--text-light); font-size: 0.85rem; margin-top: 0.75rem;">
+          More keyboard packs coming soon! (Cherry Blue, Topre, IBM Model M)
+        </p>
       </section>
       
       <!-- Code Examples -->
@@ -776,25 +828,38 @@ const sounds = new JuicySounds()
 sounds.play('success')  // that's it</pre>
         </div>
       </section>
-      
-      <footer>
+
+      </main>
+
+      <footer role="contentinfo">
         <div class="footer-links">
-          <a href="https://github.com/pibulus/juicy-sounds" target="_blank">github</a>
-          <a href="https://www.npmjs.com/package/juicy-sounds" target="_blank">npm</a>
-          <a href="https://codepen.io/pen?template=juicy-sounds" target="_blank">try it</a>
+          <a href="https://github.com/pibulus/juicy-sounds" target="_blank" rel="noopener noreferrer">github</a>
+          <a href="#" onclick="alert('NPM package coming soon!'); return false;">npm (soon)</a>
+          <a href="https://github.com/pibulus/juicy-sounds#readme" target="_blank" rel="noopener noreferrer">docs</a>
         </div>
-        <a href="https://github.com/pibulus/juicy-sounds" target="_blank" class="github-stars">
+        <a href="https://github.com/pibulus/juicy-sounds" target="_blank" rel="noopener noreferrer" class="github-stars">
           ⭐ star on github
         </a>
-        <p>made with chaos & care by pablo</p>
+        <p>made with chaos & care by <a href="https://twitter.com/pibulus" target="_blank" rel="noopener noreferrer" style="color: inherit; font-weight: 600;">pablo</a></p>
       </footer>
     </div>
     
     <!-- Volume Control -->
-    <div class="volume-control">
-      <span class="volume-feedback" id="volumeFeedback">70%</span>
-      <span>🔊</span>
-      <input type="range" class="volume-slider" min="0" max="100" value="70" id="volumeSlider" oninput="setVolume(this.value)">
+    <div class="volume-control" role="group" aria-label="Volume control">
+      <span class="volume-feedback" id="volumeFeedback" aria-live="polite" aria-atomic="true">70%</span>
+      <span role="img" aria-hidden="true">🔊</span>
+      <input
+        type="range"
+        class="volume-slider"
+        min="0"
+        max="100"
+        value="70"
+        id="volumeSlider"
+        oninput="setVolume(this.value)"
+        aria-label="Sound volume"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="70">
     </div>
     
     <!-- Scripts -->
@@ -845,6 +910,9 @@ sounds.play('success')  // that's it</pre>
       
       window.setVolume = (val) => {
         window.sounds.setVolume(val / 100);
+        // Update ARIA attributes
+        const slider = document.getElementById('volumeSlider');
+        slider.setAttribute('aria-valuenow', val);
         // Show volume feedback
         const feedback = document.getElementById('volumeFeedback');
         feedback.textContent = val + '%';
@@ -878,20 +946,30 @@ sounds.play('success')  // that's it</pre>
         const button = document.createElement('button');
         button.className = 'sound-button';
         button.innerHTML = `<span class="sound-name">${sound}</span>`;
-        
+        button.setAttribute('aria-label', `Play ${sound} sound`);
+
         // Preload on hover for instant playback
         button.onmouseenter = () => {
           window.sounds.preload(sound);
         };
-        
-        button.onclick = () => {
+
+        const playSound = () => {
           // Remove playing class from all
-          document.querySelectorAll('.sound-button').forEach(b => 
+          document.querySelectorAll('.sound-button').forEach(b =>
             b.classList.remove('playing')
           );
           button.classList.add('playing');
           window.sounds.play(sound);
           setTimeout(() => button.classList.remove('playing'), 300);
+        };
+
+        button.onclick = playSound;
+        // Add keyboard support
+        button.onkeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            playSound();
+          }
         };
         soundGrid.appendChild(button);
       });
