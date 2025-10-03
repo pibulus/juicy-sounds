@@ -9,6 +9,9 @@ Dead simple mechanical keyboard sounds for web apps. Make typing feel amazing.
 - 🎚️ **Simple API** - One class, intuitive methods, graceful fallbacks
 - 🪶 **Lightweight** - No complex dependencies, just Web Audio API
 - 🎯 **Plug & Play** - Copy files, import, done
+- 📱 **Mobile Ready** - Handles autoplay policies and suspended audio contexts
+- ⚡ **Performance Optimized** - Preloading, caching, debouncing, proper cleanup
+- 🛡️ **Error Resilient** - Retry logic, graceful degradation, network failure recovery
 
 ## 🎹 Quick Start
 
@@ -112,7 +115,11 @@ const typewriter = new SimpleTypeWriter({
   enabled: true,                        // Enable/disable sounds (default: true)
   pack: 'cherry-mx-black',              // Sound pack name (default: 'cherry-mx-black')
   basePath: '/sounds/keyboard-packs/',  // Where to find sound files
-  debug: false                          // Enable console logging (default: false)
+  debug: false,                         // Enable console logging (default: false)
+  debounceMs: 10,                       // Min ms between sounds (default: 10)
+  retryAttempts: 3,                     // Network retry attempts (default: 3)
+  preloadOnHover: true,                 // Preload when hovering inputs (default: true)
+  cacheBuffers: true                    // Cache decoded audio buffers (default: true)
 });
 ```
 
@@ -176,6 +183,9 @@ typewriter.attach('#my-input');           // Single element
 
 // Switch sound packs
 await typewriter.setPack('cherry-mx-black');
+
+// Mobile/Chrome audio context fix
+await typewriter.resumeAudioContext();    // Call on user interaction
 
 // Debug connection
 await typewriter.testConnection();        // Returns true/false

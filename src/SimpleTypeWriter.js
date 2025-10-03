@@ -11,6 +11,10 @@ export class SimpleTypeWriter {
       pack: 'cherry-mx-black',
       basePath: './sounds/keyboard-packs/',
       debug: false, // Enable console logging
+      debounceMs: 10, // Minimum ms between sounds
+      retryAttempts: 3, // Number of retry attempts on load failure
+      preloadOnHover: true, // Preload sounds when hovering over inputs
+      cacheBuffers: true, // Cache decoded audio buffers
       ...config
     };
 
@@ -20,6 +24,11 @@ export class SimpleTypeWriter {
     this.loaded = false;
     this.loadingPack = null;
     this.attachedElements = new Set();
+    this.lastPlayTime = 0;
+    this.activeSources = new Set(); // Track active audio sources for cleanup
+    this.retryCount = 0;
+    this.bufferCache = new Map(); // Cache for multiple packs
+    this.loadPromise = null; // Track current load operation
   }
   
   /**
@@ -28,26 +37,80 @@ export class SimpleTypeWriter {
   async init(packName = null) {
     // Use provided pack or default
     const pack = packName || this.config.pack;
-    
+
     // If already loaded this pack, return
     if (this.loaded && this.loadingPack === pack) return;
-    
+
+    // If already loading, wait for that operation
+    if (this.loadPromise && this.loadingPack === pack) {
+      return this.loadPromise;
+    }
+
+    // Check cache first
+    if (this.config.cacheBuffers && this.bufferCache.has(pack)) {
+      const cached = this.bufferCache.get(pack);
+      this.audioBuffer = cached.buffer;
+      this.configData = cached.config;
+      this.loaded = true;
+      this.loadingPack = pack;
+      this.config.pack = pack;
+      if (this.config.debug) {
+        console.log('🎹 Keyboard sounds loaded from cache:', pack);
+      }
+      return;
+    }
+
     // Mark as loading this pack
     this.loadingPack = pack;
     this.loaded = false;
-    
+    this.retryCount = 0;
+
+    // Start loading and track the promise
+    this.loadPromise = this._loadPack(pack);
+
+    try {
+      await this.loadPromise;
+    } finally {
+      this.loadPromise = null;
+    }
+  }
+
+  async _loadPack(pack) {
     try {
       // Create audio context (required for Web Audio API)
       if (!this.audioContext) {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
-      
-      // Load the config and audio in parallel
+
+      // Resume audio context if it's suspended (happens on mobile/Chrome)
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+
+      // Load the config and audio with retry logic
       const basePath = `${this.config.basePath}${pack}/`;
-      const [configResponse, audioResponse] = await Promise.all([
-        fetch(basePath + 'config.json'),
-        fetch(basePath + 'sound.ogg')
-      ]);
+      let configResponse, audioResponse;
+
+      // Retry logic for network failures
+      while (this.retryCount < this.config.retryAttempts) {
+        try {
+          [configResponse, audioResponse] = await Promise.all([
+            fetch(basePath + 'config.json'),
+            fetch(basePath + 'sound.ogg')
+          ]);
+
+          if (configResponse.ok && audioResponse.ok) {
+            break; // Success, exit retry loop
+          }
+        } catch (networkError) {
+          this.retryCount++;
+          if (this.retryCount >= this.config.retryAttempts) {
+            throw networkError;
+          }
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, this.retryCount) * 100));
+        }
+      }
 
       if (!configResponse.ok) {
         throw new Error(`Config not found at ${basePath}config.json (HTTP ${configResponse.status})`);
@@ -60,8 +123,18 @@ export class SimpleTypeWriter {
       const arrayBuffer = await audioResponse.arrayBuffer();
       this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
 
+      // Cache the loaded pack if caching is enabled
+      if (this.config.cacheBuffers) {
+        this.bufferCache.set(pack, {
+          buffer: this.audioBuffer,
+          config: this.configData
+        });
+      }
+
       this.loaded = true;
       this.config.pack = pack;
+      this.retryCount = 0; // Reset retry count on success
+
       if (this.config.debug) {
         console.log('🎹 Keyboard sounds loaded:', this.configData.name);
       }
@@ -72,6 +145,7 @@ export class SimpleTypeWriter {
       console.error('Pack:', pack);
       console.error('Base path:', this.config.basePath);
       console.error('Error:', error.message);
+      console.error('Retry attempts:', this.retryCount);
       console.error('');
       console.error('💡 Common fixes:');
       console.error('  1. Check sound files exist in your static/public folder');
@@ -88,6 +162,35 @@ export class SimpleTypeWriter {
    */
   async setPack(packName) {
     await this.init(packName);
+  }
+
+  /**
+   * Resume audio context (call on user interaction for mobile support)
+   * Returns true if context was resumed, false if already running
+   */
+  async resumeAudioContext() {
+    if (!this.audioContext) {
+      if (!this.loaded) {
+        await this.init();
+      }
+      return false;
+    }
+
+    if (this.audioContext.state === 'suspended') {
+      try {
+        await this.audioContext.resume();
+        if (this.config.debug) {
+          console.log('🎹 Audio context resumed');
+        }
+        return true;
+      } catch (error) {
+        if (this.config.debug) {
+          console.error('Failed to resume audio context:', error);
+        }
+        return false;
+      }
+    }
+    return false;
   }
 
   /**
@@ -127,15 +230,32 @@ export class SimpleTypeWriter {
   }
   
   /**
-   * Play a key sound
+   * Play a key sound with debouncing and audio context check
    */
-  play(event) {
+  async play(event) {
     if (!this.config.enabled || !this.loaded) return;
-    
+
+    // Debounce rapid key presses
+    const now = Date.now();
+    if (now - this.lastPlayTime < this.config.debounceMs) return;
+    this.lastPlayTime = now;
+
+    // Resume audio context if needed (mobile/Chrome autoplay policy)
+    if (this.audioContext && this.audioContext.state === 'suspended') {
+      try {
+        await this.audioContext.resume();
+      } catch (resumeError) {
+        if (this.config.debug) {
+          console.warn('Could not resume audio context:', resumeError);
+        }
+        return;
+      }
+    }
+
     // Map the key to a sound ID
     const keyId = this.getKeyId(event);
     const soundData = this.configData.defines[keyId];
-    
+
     if (!soundData) {
       // Try a fallback for unmapped keys
       const fallbackId = '65'; // Use 'A' key sound as fallback
@@ -145,31 +265,51 @@ export class SimpleTypeWriter {
       }
       return;
     }
-    
+
     const [startMs, durationMs] = soundData;
     this.playSound(startMs, durationMs);
   }
   
   /**
-   * Play a specific segment of the audio buffer
+   * Play a specific segment of the audio buffer with proper cleanup
    */
   playSound(startMs, durationMs) {
     if (!this.audioBuffer || !this.audioContext) return;
-    
-    const source = this.audioContext.createBufferSource();
-    source.buffer = this.audioBuffer;
-    
-    const gainNode = this.audioContext.createGain();
-    gainNode.gain.value = this.config.volume;
-    
-    source.connect(gainNode);
-    gainNode.connect(this.audioContext.destination);
-    
-    // Convert ms to seconds
-    const startTime = startMs / 1000;
-    const duration = durationMs / 1000;
-    
-    source.start(0, startTime, duration);
+
+    try {
+      const source = this.audioContext.createBufferSource();
+      source.buffer = this.audioBuffer;
+
+      const gainNode = this.audioContext.createGain();
+      gainNode.gain.value = this.config.volume;
+
+      source.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+
+      // Convert ms to seconds
+      const startTime = startMs / 1000;
+      const duration = durationMs / 1000;
+
+      // Track this source for cleanup
+      this.activeSources.add(source);
+
+      // Clean up when sound ends
+      source.onended = () => {
+        this.activeSources.delete(source);
+        try {
+          source.disconnect();
+          gainNode.disconnect();
+        } catch (e) {
+          // Ignore disconnect errors (already disconnected)
+        }
+      };
+
+      source.start(0, startTime, duration);
+    } catch (error) {
+      if (this.config.debug) {
+        console.error('Error playing sound:', error);
+      }
+    }
   }
   
   /**
@@ -217,22 +357,35 @@ export class SimpleTypeWriter {
   }
   
   /**
-   * Attach to input elements
+   * Attach to input elements with optional preloading
    */
   attach(selector = 'input, textarea') {
     // Auto-initialize on first attach
     if (!this.loaded) {
       this.init();
     }
-    
+
     const elements = document.querySelectorAll(selector);
-    
+
     elements.forEach(element => {
       if (this.attachedElements.has(element)) return;
 
       const handler = (e) => this.play(e);
       element.addEventListener('keydown', handler);
       element._typewriterHandler = handler;
+
+      // Add preloading on hover/focus
+      if (this.config.preloadOnHover) {
+        const preloadHandler = () => {
+          if (!this.loaded && !this.loadPromise) {
+            this.init(); // Start loading on hover/focus
+          }
+        };
+        element.addEventListener('mouseenter', preloadHandler);
+        element.addEventListener('focus', preloadHandler);
+        element._typewriterPreloadHandler = preloadHandler;
+      }
+
       this.attachedElements.add(element);
     });
 
@@ -250,6 +403,11 @@ export class SimpleTypeWriter {
         element.removeEventListener('keydown', element._typewriterHandler);
         delete element._typewriterHandler;
       }
+      if (element._typewriterPreloadHandler) {
+        element.removeEventListener('mouseenter', element._typewriterPreloadHandler);
+        element.removeEventListener('focus', element._typewriterPreloadHandler);
+        delete element._typewriterPreloadHandler;
+      }
     });
     this.attachedElements.clear();
   }
@@ -262,12 +420,35 @@ export class SimpleTypeWriter {
   setVolume(v) { this.config.volume = Math.max(0, Math.min(1, v)); }
   
   /**
-   * Cleanup
+   * Cleanup with proper resource management
    */
   dispose() {
+    // Detach all event listeners
     this.detach();
+
+    // Stop all active audio sources
+    this.activeSources.forEach(source => {
+      try {
+        source.stop();
+        source.disconnect();
+      } catch (e) {
+        // Ignore errors for already stopped sources
+      }
+    });
+    this.activeSources.clear();
+
+    // Clear references to free memory
+    this.audioBuffer = null;
+    this.configData = null;
+    this.loaded = false;
+    this.loadingPack = null;
+
+    // Close audio context
     if (this.audioContext && this.audioContext.state !== 'closed') {
-      this.audioContext.close();
+      this.audioContext.close().catch(() => {
+        // Ignore close errors
+      });
+      this.audioContext = null;
     }
   }
 }
