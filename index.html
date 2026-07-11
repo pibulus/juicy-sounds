@@ -1,1265 +1,332 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juicy Sounds - Mechanical Keyboard Sounds for Web Apps</title>
-    <meta name="description" content="Dead simple mechanical keyboard sounds and UI audio for web apps. Real Cherry MX recordings, framework-agnostic, plug and play. Works with Fresh, Next.js, Vite, React, vanilla JS.">
-    <meta name="keywords" content="keyboard sounds, mechanical keyboard, typing sounds, web audio, ui sounds, cherry mx, javascript, web components">
-    <meta name="author" content="Pablo Alvarado">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎹 Mechanical Keyboard Sound Demo</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍊</text></svg>">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://juicy-sounds.dev">
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://juicy-sounds.dev">
-    <meta property="og:title" content="Juicy Sounds - Mechanical Keyboard Sounds for Web Apps">
-    <meta property="og:description" content="Dead simple mechanical keyboard sounds for web apps. Real Cherry MX recordings, framework-agnostic, plug and play.">
-    <meta property="og:image" content="https://juicy-sounds.dev/og-image.jpg">
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 700px;
+      width: 100%;
+      padding: 40px;
+    }
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://juicy-sounds.dev">
-    <meta property="twitter:title" content="Juicy Sounds - Mechanical Keyboard Sounds for Web Apps">
-    <meta property="twitter:description" content="Dead simple mechanical keyboard sounds for web apps. Real Cherry MX recordings, framework-agnostic, plug and play.">
-    <meta property="twitter:image" content="https://juicy-sounds.dev/og-image.jpg">
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      text-align: center;
+    }
 
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#FFDAB9">
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
 
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍊</text></svg>">
-    
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    .pack-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
 
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Juicy Sounds",
-      "description": "Mechanical keyboard sounds and UI audio library for web applications",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Web Browser",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+    .pack-card {
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .pack-card:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .pack-card.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+    }
+
+    .pack-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+
+    .pack-card .description {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    .pack-card .specs {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 250px;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      resize: vertical;
+      transition: all 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: 2px solid #667eea;
+      background: white;
+      color: #667eea;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    button.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .volume {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      width: 100px;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .status.loading {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status.ready {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .keyboard-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .pack-selector {
+        grid-template-columns: 1fr;
       }
     }
-    </script>
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎹 Real Mechanical Keyboard Sounds</h1>
+    <p class="subtitle">Choose your switch type and start typing!</p>
     
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      
-      :root {
-        /* Pablo's Pastel Punk Palette */
-        --peach: #FFDAB9;
-        --pink: #FFB6C1;
-        --lavender: #E6E6FA;
-        --mint: #B2FFDB;
-        --butter: #FFF8DC;
-        --pool: #B0E0E6;
-        --coral: #FF6B6B;
-        --sage: #A8D5A8;
-        --cream: #FEFAF4;
-        --eggshell: #FFFDF7;
-        
-        /* Functional */
-        --text: #2D3748;
-        --text-light: #718096;
-        --black: #000000;
-        
-        /* Neo-brutalist */
-        --border: 3px solid var(--black);
-        --border-thick: 4px solid var(--black);
-        --shadow: 4px 4px 0px var(--black);
-        --shadow-small: 2px 2px 0px var(--black);
-        --border-radius: 8px;
-      }
-      
-      body {
-        font-family: 'Space Grotesk', -apple-system, sans-serif;
-        background: linear-gradient(135deg, var(--cream), var(--butter));
-        color: var(--text);
-        line-height: 1.5;
-        min-height: 100vh;
-      }
-      
-      /* Floating Background Elements - more subtle */
-      .float-bg {
-        position: fixed;
-        border-radius: 50%;
-        opacity: 0.15;
-        animation: float 20s infinite ease-in-out;
-        pointer-events: none;
-        z-index: 0;
-      }
-      
-      .float-1 {
-        width: 200px;
-        height: 200px;
-        background: var(--peach);
-        top: -50px;
-        right: -50px;
-      }
-      
-      .float-2 {
-        width: 150px;
-        height: 150px;
-        background: var(--lavender);
-        bottom: 100px;
-        left: -50px;
-        animation-delay: 5s;
-      }
-      
-      @keyframes float {
-        0%, 100% { transform: translate(0, 0); }
-        25% { transform: translate(20px, -20px); }
-        50% { transform: translate(-15px, 15px); }
-        75% { transform: translate(-20px, -10px); }
-      }
-      
-      /* Layout - tighter */
-      .container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 1.5rem;
-        position: relative;
-        z-index: 1;
-      }
-      
-      /* Header - tighter */
-      header {
-        text-align: center;
-        padding: 2rem 0 3rem;
-      }
-      
-      .logo {
-        font-size: clamp(2.5rem, 7vw, 4rem);
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.02em;
-        animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-      }
-      
-      .logo .juice {
-        background: linear-gradient(135deg, var(--coral), var(--peach));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      
-      .tagline {
-        font-size: 1.25rem;
-        color: var(--text-light);
-        margin-bottom: 1rem;
-        animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
-      }
-      
-      @keyframes slideDown {
-        from { transform: translateY(-20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      
-      @keyframes slideUp {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      
-      /* Hero Card - tighter */
-      .hero-card {
-        background: var(--eggshell);
-        border: var(--border-thick);
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
-        padding: 2rem;
-        margin-bottom: 2.5rem;
-        animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
-        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      }
-      
-      .hero-card:hover {
-        transform: translate(-1px, -1px);
-        box-shadow: 5px 5px 0px var(--black);
-      }
-      
-      .hero-content {
-        display: grid;
-        gap: 2rem;
-        align-items: center;
-      }
-      
-      @media (min-width: 768px) {
-        .hero-content {
-          grid-template-columns: 1fr 1fr;
-        }
-      }
-      
-      .hero-text h2 {
-        font-size: 1.75rem;
-        margin-bottom: 0.75rem;
-        line-height: 1.2;
-      }
-      
-      .hero-text p {
-        color: var(--text-light);
-        margin-bottom: 1rem;
-        font-size: 1.05rem;
-      }
-      
-      .feature-list {
-        list-style: none;
-        margin-bottom: 1.5rem;
-      }
-      
-      .feature-list li {
-        padding: 0.35rem 0;
-        color: var(--text-light);
-      }
-      
-      .feature-list li::before {
-        content: "→ ";
-        color: var(--coral);
-        font-weight: 700;
-      }
-      
-      /* Try It Button */
-      .try-button {
-        background: linear-gradient(135deg, var(--coral), var(--peach));
-        color: white;
-        border: var(--border);
-        border-radius: 100px;
-        padding: 0.8rem 1.5rem;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: var(--shadow-small);
-        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      
-      .try-button:hover {
-        transform: translate(-2px, -2px);
-        box-shadow: 4px 4px 0px var(--black);
-      }
-      
-      .try-button:active {
-        transform: translate(0px, 0px);
-        box-shadow: 1px 1px 0px var(--black);
-      }
-
-      .try-button:focus,
-      .style-button:focus,
-      .sound-button:focus,
-      .gradient-button:focus,
-      .code-tab:focus {
-        outline: 3px solid var(--coral);
-        outline-offset: 2px;
-      }
-      
-      /* Sound Grid - cleaner design */
-      .sound-grid-section {
-        margin-bottom: 2.5rem;
-      }
-      
-      .sound-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        margin-top: 1.5rem;
-        max-width: 480px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      
-      .sound-button {
-        background: linear-gradient(135deg, var(--eggshell), white);
-        border: 2px solid var(--black);
-        border-radius: 6px;
-        padding: 1rem 0.5rem;
-        cursor: pointer;
-        transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-        text-align: center;
-        font-family: inherit;
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .sound-button:hover {
-        transform: translate(-1px, -1px);
-        box-shadow: 2px 2px 0px var(--black);
-        background: linear-gradient(135deg, var(--mint), var(--sage));
-      }
-      
-      .sound-button:active {
-        transform: translate(1px, 1px);
-        box-shadow: none;
-      }
-      
-      .sound-button.playing {
-        animation: soundPulse 0.3s;
-        background: linear-gradient(135deg, var(--pink), var(--lavender));
-      }
-      
-      @keyframes soundPulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(0.95); }
-        100% { transform: scale(1); }
-      }
-      
-      .sound-name {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text);
-      }
-      
-      /* Section Headers - tighter */
-      .section-header {
-        text-align: center;
-        margin-bottom: 1.5rem;
-      }
-      
-      .section-header h2 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-        position: relative;
-        display: inline-block;
-      }
-      
-      .section-header h2::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 40px;
-        height: 3px;
-        background: linear-gradient(90deg, var(--coral), var(--peach));
-        border-radius: 2px;
-      }
-      
-      .section-header p {
-        color: var(--text-light);
-        font-size: 1.05rem;
-      }
-      
-      /* TypeWriter Demo - tighter */
-      .typewriter-demo {
-        background: linear-gradient(135deg, var(--pool), var(--lavender));
-        border: var(--border-thick);
-        border-radius: var(--border-radius);
-        padding: 2rem;
-        box-shadow: var(--shadow);
-        margin-bottom: 2.5rem;
-      }
-      
-      .typewriter-screen {
-        background: var(--eggshell);
-        border: 2px solid var(--black);
-        border-radius: 6px;
-        padding: 1.5rem;
-        min-height: 120px;
-        font-family: 'Courier New', monospace;
-        font-size: 1.1rem;
-        line-height: 1.6;
-        position: relative;
-        cursor: text;
-      }
-      
-      .typewriter-input {
-        background: transparent;
-        border: none;
-        outline: none;
-        width: 100%;
-        height: 100%;
-        min-height: 90px;
-        font-family: 'Courier New', monospace;
-        font-size: 1.1rem;
-        line-height: 1.6;
-        color: var(--text);
-        resize: none;
-      }
-      
-      .typewriter-text {
-        display: inline;
-      }
-      
-      .typewriter-cursor {
-        display: none; /* Hidden by default */
-        width: 2px;
-        height: 1.2em;
-        background: var(--text);
-        animation: blink 1s infinite;
-        vertical-align: text-bottom;
-        margin-left: 2px;
-      }
-      
-      .typewriter-cursor.active {
-        display: inline-block; /* Only show during demo */
-      }
-      
-      @keyframes blink {
-        0%, 50% { opacity: 1; }
-        51%, 100% { opacity: 0; }
-      }
-      
-      .typewriter-controls {
-        display: flex;
-        gap: 0.75rem;
-        margin-top: 1.5rem;
-        flex-wrap: wrap;
-      }
-      
-      .style-button {
-        background: var(--eggshell);
-        border: 2px solid var(--black);
-        border-radius: 100px;
-        padding: 0.5rem 1.25rem;
-        cursor: pointer;
-        font-family: inherit;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-      }
-      
-      .style-button:hover {
-        transform: translate(-1px, -1px);
-        box-shadow: 2px 2px 0px var(--black);
-      }
-      
-      .style-button.active {
-        background: linear-gradient(135deg, var(--mint), var(--sage));
-      }
-      
-      /* Gradient Demo */
-      .gradient-demo {
-        background: var(--eggshell);
-        border: var(--border-thick);
-        border-radius: var(--border-radius);
-        padding: 2rem;
-        box-shadow: var(--shadow);
-        margin-bottom: 2.5rem;
-      }
-      
-      .gradient-buttons {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      
-      .gradient-button {
-        width: 80px;
-        height: 80px;
-        border: 2px solid var(--black);
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.15s;
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .gradient-button span {
-        position: absolute;
-        bottom: 4px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: white;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-      }
-      
-      .gradient-button:hover {
-        transform: translate(-2px, -2px);
-        box-shadow: 3px 3px 0px var(--black);
-      }
-      
-      .gradient-button:active {
-        transform: translate(0, 0);
-        box-shadow: none;
-      }
-      
-      /* Gradient colors */
-      .gradient-low {
-        background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-      }
-      
-      .gradient-mid {
-        background: linear-gradient(135deg, #667EEA, #764BA2);
-      }
-      
-      .gradient-high {
-        background: linear-gradient(135deg, #F093FB, #F5576C);
-      }
-      
-      /* Code Examples - tighter */
-      .code-section {
-        margin-bottom: 2.5rem;
-      }
-      
-      .code-tabs {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: -2px;
-      }
-      
-      .code-tab {
-        background: var(--eggshell);
-        border: 2px solid var(--black);
-        border-bottom: none;
-        border-radius: 6px 6px 0 0;
-        padding: 0.5rem 1.25rem;
-        cursor: pointer;
-        font-family: inherit;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.15s;
-      }
-      
-      .code-tab.active {
-        background: var(--mint);
-        transform: translateY(-2px);
-      }
-      
-      .code-content {
-        background: var(--text);
-        color: var(--cream);
-        border: var(--border-thick);
-        border-radius: 0 8px 8px 8px;
-        padding: 1.5rem;
-        overflow-x: auto;
-        box-shadow: var(--shadow);
-        position: relative;
-      }
-      
-      .code-copy {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: var(--cream);
-        color: var(--text);
-        border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-family: inherit;
-        font-size: 0.8rem;
-        font-weight: 500;
-        transition: all 0.2s;
-        opacity: 0.7;
-      }
-      
-      .code-copy:hover {
-        opacity: 1;
-        transform: scale(1.05);
-      }
-      
-      .code-copy.copied {
-        background: var(--mint);
-        color: var(--black);
-      }
-      
-      pre {
-        margin: 0;
-        font-family: 'Courier New', monospace;
-        font-size: 0.85rem;
-        line-height: 1.5;
-      }
-      
-      /* Volume Control */
-      .volume-control {
-        position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        background: var(--eggshell);
-        border: 2px solid var(--black);
-        border-radius: 100px;
-        padding: 0.75rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        box-shadow: var(--shadow-small);
-        z-index: 100;
-      }
-      
-      .volume-feedback {
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--black);
-        color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        margin-bottom: 0.5rem;
-        opacity: 0;
-        transition: opacity 0.2s;
-        pointer-events: none;
-      }
-      
-      .volume-feedback.show {
-        opacity: 1;
-      }
-      
-      .volume-slider {
-        width: 80px;
-        -webkit-appearance: none;
-        appearance: none;
-        height: 4px;
-        background: var(--lavender);
-        border-radius: 2px;
-        outline: none;
-      }
-      
-      .volume-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        background: var(--coral);
-        border: 2px solid var(--black);
-        border-radius: 50%;
-        cursor: pointer;
-      }
-      
-      /* Footer */
-      footer {
-        text-align: center;
-        padding: 4rem 0 2rem;
-        color: var(--text-light);
-        margin-top: 4rem;
-        border-top: var(--border);
-        background: linear-gradient(to bottom, transparent, var(--butter));
-      }
-      
-      .footer-links {
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        margin-bottom: 1rem;
-      }
-      
-      .footer-links a {
-        color: var(--text);
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.15s;
-        position: relative;
-        padding: 0.5rem 1rem;
-        border-radius: 100px;
-      }
-      
-      .footer-links a:hover {
-        background: var(--mint);
-        transform: translateY(-2px);
-      }
-      
-      .github-stars {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-top: 1.5rem;
-        padding: 0.5rem 1rem;
-        background: var(--black);
-        color: white;
-        text-decoration: none;
-        border-radius: 100px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.2s;
-      }
-      
-      .github-stars:hover {
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      }
-      
-      /* Responsive */
-      @media (max-width: 768px) {
-        .container {
-          padding: 1rem;
-        }
-        
-        .hero-card {
-          padding: 1.5rem;
-        }
-        
-        .sound-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-    </style>
-  </head>
-  
-  <body>
-    <!-- Floating Background Elements -->
-    <div class="float-bg float-1"></div>
-    <div class="float-bg float-2"></div>
-    
-    <div class="container">
-      <header>
-        <h1 class="logo">
-          <span class="juice">juicy</span> sounds <span role="img" aria-label="orange">🍊</span>
-        </h1>
-        <p class="tagline">ui audio that actually feels good</p>
-      </header>
-
-      <main>
-      
-      <!-- Hero Card -->
-      <div class="hero-card">
-        <div class="hero-content">
-          <div class="hero-text">
-            <h2>feedback that slaps.<br>zero bundle bloat.</h2>
-            <p>
-              drop it in. pick your vibe. ship delight.
-            </p>
-            <ul class="feature-list">
-              <li>24 real instrument sounds</li>
-              <li>gradient synth tones</li>
-              <li>typewriter engine</li>
-              <li>lazy loads on demand</li>
-            </ul>
-            <button class="try-button" onclick="playDemoSequence()" aria-label="Play demo sound sequence">
-              feel the juice <span role="img" aria-label="musical note">🎵</span>
-            </button>
-          </div>
-          <div class="hero-demo">
-            <div class="gradient-demo" style="padding: 1.5rem;">
-              <p style="margin-bottom: 1rem; font-size: 0.9rem; text-align: center;">gradient tones →</p>
-              <div class="gradient-buttons">
-                <button class="gradient-button gradient-low" onclick="playTone(220)" aria-label="Play low tone (220 Hz)">
-                  <span>low</span>
-                </button>
-                <button class="gradient-button gradient-mid" onclick="playTone(440)" aria-label="Play mid tone (440 Hz)">
-                  <span>mid</span>
-                </button>
-                <button class="gradient-button gradient-high" onclick="playTone(880)" aria-label="Play high tone (880 Hz)">
-                  <span>high</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="pack-selector">
+      <div class="pack-card active" data-pack="cherry-mx-black">
+        <div class="keyboard-icon">⌨️</div>
+        <h3>Cherry MX Black</h3>
+        <div class="description">Linear & Smooth</div>
+        <div class="specs">2.5MB • 88 keys</div>
       </div>
       
-      <!-- Sound Grid -->
-      <section class="sound-grid-section" aria-labelledby="sound-grid-heading">
-        <div class="section-header">
-          <h2 id="sound-grid-heading">pick your flavor</h2>
-          <p>tap any sound to preview</p>
-        </div>
-        <div class="sound-grid" id="soundGrid" role="group" aria-label="Sound effect buttons">
-          <!-- Populated by JS -->
-        </div>
-      </section>
+      <div class="pack-card" data-pack="cherry-mx-blue">
+        <div class="keyboard-icon">🔵</div>
+        <h3>Cherry MX Blue</h3>
+        <div class="description">Clicky & Tactile</div>
+        <div class="specs">2.0MB • 88 keys</div>
+      </div>
       
-      <!-- Musical Scale Demo -->
-      <section class="gradient-demo" style="margin-bottom: 2.5rem;">
-        <div class="section-header">
-          <h2>musical scales</h2>
-          <p>test the tone engine with real notes</p>
-        </div>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
-          <button class="style-button" onclick="playScale('major')">C Major</button>
-          <button class="style-button" onclick="playScale('minor')">A Minor</button>
-          <button class="style-button" onclick="playScale('pentatonic')">Pentatonic</button>
-          <button class="style-button" onclick="playScale('blues')">Blues</button>
-          <button class="style-button" onclick="playScale('minecraft')">Minecraft</button>
-          <button class="style-button" id="chaosMode" onclick="toggleChaosMode()" style="background: var(--eggshell); border-style: dashed;">Random</button>
-          <button class="style-button" id="playButton" onclick="toggleAutoPlay()" style="padding: 0.5rem 1rem; min-width: auto;">▶️</button>
-        </div>
-        <div class="gradient-buttons" id="scaleButtons">
-          <!-- Will be populated with note buttons -->
-        </div>
-      </section>
-      
-      <!-- TypeWriter Demo -->
-      <section class="typewriter-demo" aria-labelledby="typewriter-heading">
-        <div class="section-header">
-          <h2 id="typewriter-heading">real keyboard sounds</h2>
-          <p>type in the box or click a keyboard to hear it</p>
-        </div>
-        <div class="typewriter-screen" onclick="document.getElementById('typewriterInput').focus()">
-          <textarea id="typewriterInput"
-                    class="typewriter-input"
-                    placeholder="start typing to hear real mechanical keyboard sounds..."
-                    aria-label="Type here to hear mechanical keyboard sounds"></textarea>
-          <span class="typewriter-text" id="typewriterText" style="display: none;"></span>
-          <span class="typewriter-cursor"></span>
-        </div>
-        <div class="typewriter-controls">
-          <button class="style-button active" onclick="switchKeyboard('cherry-mx-black')" title="Linear & smooth">Cherry Black</button>
-          <button class="style-button" onclick="clearTypewriter()">clear</button>
-        </div>
-        <p style="text-align: center; color: var(--text-light); font-size: 0.85rem; margin-top: 0.75rem;">
-          More keyboard packs coming soon! (Cherry Blue, Topre, IBM Model M)
-        </p>
-      </section>
-      
-      <!-- Code Examples -->
-      <section class="code-section">
-        <div class="section-header">
-          <h2>stupid simple</h2>
-          <p>one import. done.</p>
-        </div>
-        <div class="code-tabs">
-          <button class="code-tab active" onclick="showTab('npm')">npm</button>
-          <button class="code-tab" onclick="showTab('deno')">deno</button>
-          <button class="code-tab" onclick="showTab('cdn')">cdn</button>
-        </div>
-        <div class="code-content">
-          <button class="code-copy" onclick="copyCode()">copy</button>
-          <pre id="codeExample">npm install juicy-sounds
-
-import JuicySounds from 'juicy-sounds'
-
-const sounds = new JuicySounds()
-sounds.play('success')  // that's it</pre>
-        </div>
-      </section>
-
-      </main>
-
-      <footer role="contentinfo">
-        <div class="footer-links">
-          <a href="https://github.com/pibulus/juicy-sounds" target="_blank" rel="noopener noreferrer">github</a>
-          <a href="#" onclick="alert('NPM package coming soon!'); return false;">npm (soon)</a>
-          <a href="https://github.com/pibulus/juicy-sounds#readme" target="_blank" rel="noopener noreferrer">docs</a>
-        </div>
-        <a href="https://github.com/pibulus/juicy-sounds" target="_blank" rel="noopener noreferrer" class="github-stars">
-          ⭐ star on github
-        </a>
-        <p>made with chaos & care by <a href="https://twitter.com/pibulus" target="_blank" rel="noopener noreferrer" style="color: inherit; font-weight: 600;">pablo</a></p>
-      </footer>
+      <div class="pack-card" data-pack="topre">
+        <div class="keyboard-icon">🟣</div>
+        <h3>Topre Purple</h3>
+        <div class="description">Thocky Premium</div>
+        <div class="specs">1.5MB • 88 keys</div>
+      </div>
     </div>
     
-    <!-- Volume Control -->
-    <div class="volume-control" role="group" aria-label="Volume control">
-      <span class="volume-feedback" id="volumeFeedback" aria-live="polite" aria-atomic="true">70%</span>
-      <span role="img" aria-hidden="true">🔊</span>
-      <input
-        type="range"
-        class="volume-slider"
-        min="0"
-        max="100"
-        value="70"
-        id="volumeSlider"
-        oninput="setVolume(this.value)"
-        aria-label="Sound volume"
-        aria-valuemin="0"
-        aria-valuemax="100"
-        aria-valuenow="70">
+    <textarea 
+      id="typingArea" 
+      placeholder="Start typing to hear real mechanical keyboard sounds...
+
+Each keyboard has its own unique character:
+• Cherry MX Black - Smooth linear switches, no tactile bump
+• Cherry MX Blue - Classic clicky switches with tactile feedback
+• Topre Purple - Premium thocky sound, hybrid capacitive
+
+Try typing fast, slow, or holding keys - every sound is recorded from real keyboards!"
+      autofocus
+    ></textarea>
+    
+    <div class="controls">
+      <button id="toggleBtn" class="active">Sound: ON</button>
+      <div class="volume">
+        <label>Volume:</label>
+        <input type="range" id="volumeSlider" min="0" max="100" value="30">
+        <span id="volumeLabel">30%</span>
+      </div>
     </div>
     
-    <!-- Scripts -->
-    <script type="module">
-      // Import working library and keyboard sounds
-      import JuicySounds from './dist/juicy-simple.js';
-      import SimpleTypeWriter from './src/SimpleTypeWriter.js';
-      
-      // Initialize globally
-      window.sounds = new JuicySounds({
-        volume: 0.7,
-        basePath: './sounds/interface/'
-      });
-      
-      // Initialize keyboard sounds
-      window.keyboard = new SimpleTypeWriter({
-        volume: 0.3,
-        enabled: true,
-        pack: 'cherry-mx-black'
-      });
-      
-      // Initialize keyboard on first load
-      (async () => {
-        await window.keyboard.init();
-        window.keyboard.attach('#typewriterInput');
-        console.log('🎹 Keyboard sounds loaded!');
-      })();
-      
-      console.log('JuicySounds loaded!');
-      
-      // Global functions for onclick handlers
-      window.playDemoSound = () => {
-        window.sounds.play('success');
-      };
-      
-      window.playDemoSequence = () => {
-        // Play a fun sequence of sounds
-        window.sounds.play('click');
-        setTimeout(() => window.sounds.play('success'), 200);
-        setTimeout(() => window.sounds.playTone(440, 100), 400);
-        setTimeout(() => window.sounds.playTone(550, 100), 500);
-        setTimeout(() => window.sounds.playTone(660, 150), 600);
-      };
-      
-      window.playTone = (freq, duration = 200) => {
-        window.sounds.playTone(freq, duration);
-      };
-      
-      window.setVolume = (val) => {
-        const volume = val / 100;
-        window.sounds.setVolume(volume);
-        // Also update keyboard sounds volume
-        if (window.keyboard) {
-          window.keyboard.setVolume(volume * 0.3); // Keep keyboard quieter (30% of main volume)
-        }
-        // Update ARIA attributes
-        const slider = document.getElementById('volumeSlider');
-        slider.setAttribute('aria-valuenow', val);
-        // Show volume feedback
-        const feedback = document.getElementById('volumeFeedback');
-        feedback.textContent = val + '%';
-        feedback.classList.add('show');
-        setTimeout(() => feedback.classList.remove('show'), 1000);
-      };
-      
-      window.copyCode = () => {
-        const code = document.getElementById('codeExample').textContent;
-        navigator.clipboard.writeText(code).then(() => {
-          const btn = event.target;
-          btn.textContent = 'copied!';
-          btn.classList.add('copied');
-          window.sounds.play('success');
-          setTimeout(() => {
-            btn.textContent = 'copy';
-            btn.classList.remove('copied');
-          }, 2000);
-        });
-      };
-      
-      // Create sound grid
-      const soundGrid = document.getElementById('soundGrid');
-      const soundNames = [
-        'click', 'hover', 'success', 'error',
-        'notification', 'toggle', 'open', 'close',
-        'bong', 'glass', 'pluck', 'select'
-      ];
-      
-      soundNames.forEach(sound => {
-        const button = document.createElement('button');
-        button.className = 'sound-button';
-        button.innerHTML = `<span class="sound-name">${sound}</span>`;
-        button.setAttribute('aria-label', `Play ${sound} sound`);
+    <div class="status" id="status">
+      Loading Cherry MX Black sounds...
+    </div>
+  </div>
 
-        // Preload on hover for instant playback
-        button.onmouseenter = () => {
-          window.sounds.preload(sound);
-        };
-
-        const playSound = () => {
-          // Remove playing class from all
-          document.querySelectorAll('.sound-button').forEach(b =>
-            b.classList.remove('playing')
-          );
-          button.classList.add('playing');
-          window.sounds.play(sound);
-          setTimeout(() => button.classList.remove('playing'), 300);
-        };
-
-        button.onclick = playSound;
-        // Add keyboard support
-        button.onkeydown = (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            playSound();
-          }
-        };
-        soundGrid.appendChild(button);
-      });
+  <script type="module">
+    import SimpleTypeWriter from './src/SimpleTypeWriter.js';
+    
+    // Create typewriter instance
+    const typewriter = new SimpleTypeWriter({
+      volume: 0.3,
+      enabled: true,
+      pack: 'cherry-mx-black'
+    });
+    
+    // Elements
+    const status = document.getElementById('status');
+    const packCards = document.querySelectorAll('.pack-card');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeLabel = document.getElementById('volumeLabel');
+    
+    let currentPack = 'cherry-mx-black';
+    
+    // Initialize
+    async function init() {
+      status.className = 'status loading';
+      status.textContent = 'Loading Cherry MX Black sounds...';
       
-      // TypeWriter demo with real keyboard sounds
-      let typewriterRunning = false;
-      let currentPack = 'cherry-mx-black';
-      const demoText = "actual keyboards. actual vibes. zero latency.";
-      
-      // Handle real typing input - keyboard sounds are now handled by SimpleTypeWriter
-      const typewriterInput = document.getElementById('typewriterInput');
-      const typewriterText = document.getElementById('typewriterText');
-      const typewriterCursor = document.querySelector('.typewriter-cursor');
-      
-      window.clearTypewriter = () => {
-        typewriterInput.value = '';
-        typewriterText.textContent = '';
-        typewriterInput.style.visibility = 'visible';
-        typewriterText.style.display = 'none';
-        typewriterCursor.classList.remove('active');
-        window.sounds.play('toggle');
-      };
-      
-      // Preload common UI sounds on page load
-      setTimeout(() => {
-        ['click', 'success', 'toggle', 'error'].forEach(sound => {
-          window.sounds.preload(sound);
-        });
-      }, 500);
-      
-      window.switchKeyboard = async (pack) => {
-        currentPack = pack;
-        
-        // Update button states
-        document.querySelectorAll('.typewriter-controls .style-button').forEach(b => 
-          b.classList.remove('active')
-        );
-        event.target.classList.add('active');
-        
-        // Switch keyboard pack
-        await window.keyboard.setPack(pack);
-        
-        // Start demo typewriter
-        startDemoTypewriter();
-      };
-      
-      function startDemoTypewriter() {
-        // Hide input using visibility to maintain layout, show text and cursor for demo
-        typewriterInput.style.visibility = 'hidden';
-        typewriterText.style.display = 'inline';
-        typewriterText.textContent = '';
-        typewriterCursor.classList.add('active'); // Show cursor during demo
-        typewriterRunning = true;
-        
-        let i = 0;
-        const typeInterval = setInterval(async () => {
-          if (i < demoText.length && typewriterRunning) {
-            const char = demoText[i];
-            typewriterText.textContent += char;
-            
-            // Create a fake keyboard event to trigger the real keyboard sounds
-            const fakeEvent = {
-              key: char,
-              keyCode: char.charCodeAt(0)
-            };
-            await window.keyboard.play(fakeEvent);
-            
-            i++;
-          } else {
-            clearInterval(typeInterval);
-            typewriterRunning = false;
-            // After demo, switch back to input
-            setTimeout(() => {
-              typewriterInput.style.visibility = 'visible';
-              typewriterText.style.display = 'none';
-              typewriterCursor.classList.remove('active'); // Hide cursor
-              typewriterInput.value = demoText;
-              typewriterInput.focus(); // Focus the input so user can start typing
-            }, 2000);
-          }
-        }, 100);
+      try {
+        await typewriter.init();
+        typewriter.attach('#typingArea');
+        status.className = 'status ready';
+        status.textContent = '✅ Cherry MX Black loaded - Start typing!';
+      } catch (error) {
+        status.className = 'status';
+        status.textContent = '❌ Failed to load sounds';
       }
-      
-      // Musical scales functionality
-      const scales = {
-        major: [
-          { note: 'C', freq: 261.63, color: '#FF6B6B' },
-          { note: 'D', freq: 293.66, color: '#FF8E53' },
-          { note: 'E', freq: 329.63, color: '#FFB347' },
-          { note: 'F', freq: 349.23, color: '#FFD93D' },
-          { note: 'G', freq: 392.00, color: '#6BCF7F' },
-          { note: 'A', freq: 440.00, color: '#4ECDC4' },
-          { note: 'B', freq: 493.88, color: '#556270' },
-          { note: 'C↑', freq: 523.25, color: '#FF6B6B' }
-        ],
-        minor: [
-          { note: 'A', freq: 440.00, color: '#667EEA' },
-          { note: 'B', freq: 493.88, color: '#764BA2' },
-          { note: 'C', freq: 523.25, color: '#8B5CF6' },
-          { note: 'D', freq: 587.33, color: '#A78BFA' },
-          { note: 'E', freq: 659.25, color: '#C4B5FD' },
-          { note: 'F', freq: 698.46, color: '#DDD6FE' },
-          { note: 'G', freq: 783.99, color: '#EDE9FE' },
-          { note: 'A↑', freq: 880.00, color: '#667EEA' }
-        ],
-        pentatonic: [
-          { note: 'C', freq: 261.63, color: '#F093FB' },
-          { note: 'D', freq: 293.66, color: '#F5576C' },
-          { note: 'E', freq: 329.63, color: '#FA709A' },
-          { note: 'G', freq: 392.00, color: '#FEC0CE' },
-          { note: 'A', freq: 440.00, color: '#FFDDE1' },
-          { note: 'C↑', freq: 523.25, color: '#F093FB' }
-        ],
-        blues: [
-          { note: 'C', freq: 261.63, color: '#00D2FF' },
-          { note: 'E♭', freq: 311.13, color: '#3A86FF' },
-          { note: 'F', freq: 349.23, color: '#8338EC' },
-          { note: 'F#', freq: 369.99, color: '#C77DFF' },
-          { note: 'G', freq: 392.00, color: '#E0AAFF' },
-          { note: 'B♭', freq: 466.16, color: '#F2CC8F' },
-          { note: 'C↑', freq: 523.25, color: '#00D2FF' }
-        ],
-        minecraft: [
-          { note: 'E', freq: 329.63, color: '#7CB342' },
-          { note: 'G', freq: 392.00, color: '#66BB6A' },
-          { note: 'A', freq: 440.00, color: '#4DB6AC' },
-          { note: 'B', freq: 493.88, color: '#42A5F5' },
-          { note: 'C', freq: 523.25, color: '#5C6BC0' },
-          { note: 'D', freq: 587.33, color: '#7E57C2' },
-          { note: 'E↑', freq: 659.25, color: '#AB47BC' },
-          { note: 'G↑', freq: 783.99, color: '#7CB342' }
-        ]
-      };
-      
-      let currentScale = 'major';
-      let chaosMode = false;
-      let isPlaying = false;
-      let playInterval;
-      
-      window.toggleChaosMode = () => {
-        chaosMode = !chaosMode;
-        const chaosBtn = document.getElementById('chaosMode');
-        if (chaosMode) {
-          chaosBtn.style.background = 'var(--mint)';
-          chaosBtn.style.borderStyle = 'solid';
-        } else {
-          chaosBtn.style.background = 'var(--eggshell)';
-          chaosBtn.style.borderStyle = 'dashed';
-        }
-      };
-      
-      window.toggleAutoPlay = () => {
-        const playBtn = document.getElementById('playButton');
-        if (isPlaying) {
-          // Stop playing
-          isPlaying = false;
-          clearInterval(playInterval);
-          playBtn.innerHTML = '▶️';
-        } else {
-          // Start playing random notes
-          isPlaying = true;
-          playBtn.innerHTML = '⏸';
-          
-          const playRandomNote = () => {
-            if (!isPlaying) return;
-            const randomNote = scales[currentScale][Math.floor(Math.random() * scales[currentScale].length)];
-            window.sounds.playTone(randomNote.freq, 150);
-            // Animate a random button
-            const scaleButtons = document.getElementById('scaleButtons');
-            const randomBtn = scaleButtons.children[Math.floor(Math.random() * scales[currentScale].length)];
-            if (randomBtn) {
-              randomBtn.style.transform = 'scale(1.1)';
-              setTimeout(() => {
-                randomBtn.style.transform = '';
-              }, 150);
-            }
-          };
-          
-          playRandomNote(); // Play immediately
-          playInterval = setInterval(playRandomNote, 250); // Then every 250ms
-        }
-      };
-      
-      window.playScale = (scaleName) => {
-        currentScale = scaleName;
-        // Stop playing if switching scales
-        if (isPlaying) {
-          isPlaying = false;
-          clearInterval(playInterval);
-        }
-        const scaleButtons = document.getElementById('scaleButtons');
-        scaleButtons.innerHTML = '';
+    }
+    
+    // Pack selection
+    packCards.forEach(card => {
+      card.addEventListener('click', async () => {
+        const pack = card.dataset.pack;
+        if (pack === currentPack) return;
         
-        // Mark active scale button
-        if (event && event.target) {
-          event.target.classList.add('active');
-          setTimeout(() => event.target.classList.remove('active'), 200);
+        // Update UI
+        packCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        
+        // Load new pack
+        const packNames = {
+          'cherry-mx-black': 'Cherry MX Black',
+          'cherry-mx-blue': 'Cherry MX Blue',
+          'topre': 'Topre Purple'
+        };
+        
+        status.className = 'status loading';
+        status.textContent = `Loading ${packNames[pack]} sounds...`;
+        
+        try {
+          await typewriter.setPack(pack);
+          currentPack = pack;
+          status.className = 'status ready';
+          status.textContent = `✅ ${packNames[pack]} loaded - Start typing!`;
+        } catch (error) {
+          status.className = 'status';
+          status.textContent = `❌ Failed to load ${packNames[pack]}`;
         }
-        
-        // Add regular note buttons
-        scales[scaleName].forEach((noteInfo, index) => {
-          const button = document.createElement('button');
-          button.className = 'gradient-button';
-          button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
-          button.innerHTML = `<span>${noteInfo.note}</span>`;
-          button.onclick = () => {
-            const playNote = chaosMode ? 
-              scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)] : 
-              noteInfo;
-            window.sounds.playTone(playNote.freq, 300);
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => button.style.transform = '', 150);
-          };
-          button.onmouseenter = () => {
-            if (chaosMode) {
-              // In random mode, play random notes but keep original color
-              const randomNote = scales[scaleName][Math.floor(Math.random() * scales[scaleName].length)];
-              window.sounds.playTone(randomNote.freq, 150);
-            } else {
-              // Normal mode
-              window.sounds.playTone(noteInfo.freq, 150);
-            }
-            button.style.transform = 'scale(1.05)';
-            button.style.boxShadow = '3px 3px 0px var(--black)';
-          };
-          button.onmouseleave = () => {
-            button.style.transform = '';
-            button.style.boxShadow = '';
-          };
-          scaleButtons.appendChild(button);
-        });
-        
-
-        // Don't auto-play - let user click to hear
-      };
-
-      // Initialize with major scale buttons (but don't play)
-      setTimeout(() => {
-        const scaleButtons = document.getElementById('scaleButtons');
-        scaleButtons.innerHTML = '';
-
-        scales['major'].forEach((noteInfo) => {
-          const button = document.createElement('button');
-          button.className = 'gradient-button';
-          button.style.background = `linear-gradient(135deg, ${noteInfo.color}, ${noteInfo.color}dd)`;
-          button.innerHTML = `<span>${noteInfo.note}</span>`;
-          button.setAttribute('aria-label', `Play note ${noteInfo.note}`);
-          button.onclick = () => {
-            window.sounds.playTone(noteInfo.freq, 300);
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => button.style.transform = '', 150);
-          };
-          scaleButtons.appendChild(button);
-        });
-      }, 100);
-      
-      // Code tab switching
-      const codeExamples = {
-        npm: `npm install juicy-sounds
-
-import JuicySounds from 'juicy-sounds'
-
-const sounds = new JuicySounds()
-sounds.play('success')  // that's it`,
-        deno: `import JuicySounds from 'https://deno.land/x/juicy_sounds/mod.ts'
-
-const sounds = new JuicySounds()
-sounds.play('pop')  // ship it`,
-        cdn: `<script type="module">
-  import JuicySounds from 'https://esm.sh/juicy-sounds'
-  
-  const sounds = new JuicySounds()
-  sounds.play('coin')  // cha-ching
-<\/script>`
-      };
-      
-      window.showTab = (tab) => {
-        document.getElementById('codeExample').textContent = codeExamples[tab];
-        document.querySelectorAll('.code-tab').forEach(t => 
-          t.classList.remove('active')
-        );
-        event.target.classList.add('active');
-      };
-      
-      // Don't auto-start typewriter - wait for user to click a style button
-    </script>
-  </body>
+      });
+    });
+    
+    // Toggle button
+    let enabled = true;
+    toggleBtn.addEventListener('click', () => {
+      enabled = !enabled;
+      if (enabled) {
+        typewriter.enable();
+        toggleBtn.textContent = 'Sound: ON';
+        toggleBtn.classList.add('active');
+      } else {
+        typewriter.disable();
+        toggleBtn.textContent = 'Sound: OFF';
+        toggleBtn.classList.remove('active');
+      }
+    });
+    
+    // Volume control
+    volumeSlider.addEventListener('input', () => {
+      const volume = volumeSlider.value / 100;
+      typewriter.setVolume(volume);
+      volumeLabel.textContent = `${volumeSlider.value}%`;
+    });
+    
+    // Initialize on load
+    init();
+    
+    // Focus textarea
+    document.getElementById('typingArea').focus();
+  </script>
+</body>
 </html>

@@ -119,7 +119,8 @@ const typewriter = new SimpleTypeWriter({
   debounceMs: 10,                       // Min ms between sounds (default: 10)
   retryAttempts: 3,                     // Network retry attempts (default: 3)
   preloadOnHover: true,                 // Preload when hovering inputs (default: true)
-  cacheBuffers: true                    // Cache decoded audio buffers (default: true)
+  cacheBuffers: true,                   // Cache decoded audio buffers (default: true)
+  sharedState: true                     // Respect the shared 'softstack:sound' preference (default: true)
 });
 ```
 
@@ -190,7 +191,8 @@ await typewriter.resumeAudioContext();    // Call on user interaction
 // Debug connection
 await typewriter.testConnection();        // Returns true/false
 
-// Controls
+// Controls (persisted to the shared 'softstack:sound' localStorage key,
+// so sibling libraries like @softstack/weightless respect the same choice)
 typewriter.enable();                      // Enable sounds
 typewriter.disable();                     // Disable sounds
 typewriter.setVolume(0.5);                // Set volume (0-1)
@@ -212,9 +214,11 @@ Sounds play automatically on `keydown` events for attached elements. All 88 keys
 ## 🎨 Available Sound Packs
 
 Currently included:
-- **cherry-mx-black** - Cherry MX Black mechanical switches (2.7MB)
+- **cherry-mx-black** - Cherry MX Black: smooth linear, deep thock (2.7MB)
+- **cherry-mx-blue** - Cherry MX Blue: clicky, tactile, LOUD and proud
+- **topre** - Topre electrocapacitive: that legendary muffled *thock*
 
-More packs coming soon! Contribute your own recordings.
+Contribute your own recordings!
 
 ## 📦 Installation
 
@@ -230,8 +234,16 @@ cp juicy-sounds/src/SimpleTypeWriter.js your-project/utils/
 
 **NPM (Coming Soon)**
 ```bash
-npm install @juicy-sounds/typewriter
+npm install @softstack/juicy-sounds
 ```
+
+## 👨‍👩‍👧 The SoftStack Sound Family
+
+Juicy Sounds is the **flesh**: real recordings of real objects — because no synthesizer will ever fool your ears about what a Cherry MX Blue sounds like.
+
+Need the **spirit**? For everything that *isn't* a physical texture — clicks, successes, errors, notifications — grab the sibling library [🪶 weightless](https://github.com/pibulus/weightless): pure Web Audio synthesis, 0kb of assets, infinite organic variation.
+
+They stack beautifully in one app (juicy for keystrokes, weightless for UI feedback) and share one mute/volume preference via the `softstack:sound` localStorage key — the user silences one, both go quiet.
 
 ## License
 

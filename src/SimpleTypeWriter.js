@@ -15,8 +15,21 @@ export class SimpleTypeWriter {
       retryAttempts: 3, // Number of retry attempts on load failure
       preloadOnHover: true, // Preload sounds when hovering over inputs
       cacheBuffers: true, // Cache decoded audio buffers
+      sharedState: true, // Respect the shared 'softstack:sound' localStorage preference
       ...config
     };
+
+    // Shared SoftStack sound state: a user who muted/set volume in one
+    // sibling library (e.g. @softstack/weightless) has spoken for all of them.
+    if (this.config.sharedState !== false) {
+      try {
+        const stored = JSON.parse(localStorage.getItem('softstack:sound'));
+        if (stored && typeof stored === 'object') {
+          if (typeof stored.enabled === 'boolean') this.config.enabled = stored.enabled;
+          if (typeof stored.volume === 'number') this.config.volume = stored.volume;
+        }
+      } catch (e) { /* SSR / privacy mode / bad JSON — use defaults */ }
+    }
 
     this.audioContext = null;
     this.audioBuffer = null;
@@ -414,10 +427,22 @@ export class SimpleTypeWriter {
   
   /**
    * Simple controls
+   * Persist to the shared SoftStack sound state so sibling libraries
+   * (e.g. @softstack/weightless) respect the same mute/volume choice.
    */
-  enable() { this.config.enabled = true; }
-  disable() { this.config.enabled = false; }
-  setVolume(v) { this.config.volume = Math.max(0, Math.min(1, v)); }
+  enable() { this.config.enabled = true; this._saveSharedState(); }
+  disable() { this.config.enabled = false; this._saveSharedState(); }
+  setVolume(v) { this.config.volume = Math.max(0, Math.min(1, v)); this._saveSharedState(); }
+
+  _saveSharedState() {
+    if (this.config.sharedState === false) return;
+    try {
+      localStorage.setItem('softstack:sound', JSON.stringify({
+        enabled: this.config.enabled,
+        volume: this.config.volume,
+      }));
+    } catch (e) { /* SSR / privacy mode — no persistence */ }
+  }
   
   /**
    * Cleanup with proper resource management

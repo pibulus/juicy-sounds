@@ -1,9 +1,17 @@
 {
-  "name": "juicy-sounds",
-  "version": "1.0.0",
-  "description": "A delightful sound library for web interfaces that actually feels good. No corporate beeps, just pure audio juice.",
-  "main": "dist/juicy-simple.js",
-  "module": "dist/juicy-simple.js",
+  "name": "@softstack/juicy-sounds",
+  "version": "1.2.0",
+  "description": "Real mechanical keyboard sounds for web apps. Make typing feel amazing. The flesh to Weightless's spirit.",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "src",
+    "sounds/keyboard-packs"
+  ],
+  "sideEffects": false,
   "type": "module",
   "scripts": {
     "test": "echo \"No tests yet, but the sounds are juicy\" && exit 0"
@@ -12,12 +20,12 @@
     "audio",
     "sounds",
     "web-audio",
-    "ui-sounds",
-    "interface",
+    "keyboard-sounds",
+    "mechanical-keyboard",
+    "typing",
+    "typewriter",
+    "cherry-mx",
     "feedback",
-    "haptic",
-    "synthesis",
-    "button-sounds",
     "juice"
   ],
   "author": "Pablo Alvarado <pibulus@gmail.com>",
@@ -32,11 +40,5 @@
   "homepage": "https://github.com/pibulus/juicy-sounds#readme",
   "engines": {
     "node": ">=16.0.0"
-  },
-  "files": [
-    "dist",
-    "sounds",
-    "README.md",
-    "LICENSE"
-  ]
+  }
 }

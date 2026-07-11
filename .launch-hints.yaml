@@ -1,0 +1,39 @@
+# Launch hints for Launch Arsenal.
+# Edit aggressively. These fields should pin the app's real audience, problem, and promise.
+name: juicy-sounds
+slug: juicy-sounds
+app_type: web-app
+audience: people who already feel the problem
+problem: >-
+  the usual flow still takes more setup, clicks, or context switching than it
+  should
+promise: Precise playback control (sprite offsets)
+cta: 'See it at https://github.com/pibulus/juicy-sounds#readme'
+differentiators:
+  - "\U0001F39A️ Simple API - One class, intuitive methods, graceful fallbacks"
+  - >-
+    Juicy Sounds - Dead simple mechanical keyboard sounds for web apps. Make
+    typing feel amazing.
+  - >-
+    Web Audio API over Audio() tags - Precise playback control (sprite offsets)
+    - Low latency for typing feel - Volume/gain node control
+  - Precise playback control (sprite offsets)
+proof_points:
+  - "\U0001F3B9 Real Mechanical Keyboard Sounds - Cherry MX Black recordings with 88+ keys mapped"
+  - "\U0001F527 Framework Agnostic - Works with Fresh, Next.js, Vite, SvelteKit, or vanilla JS"
+  - "\U0001F39A️ Simple API - One class, intuitive methods, graceful fallbacks"
+  - "\U0001FAB6 Lightweight - No complex dependencies, just Web Audio API"
+objections:
+  - 'Still wants a human pass on audience, proof, and the sharpest angle.'
+keywords:
+  seed:
+    - audio
+    - sounds
+    - web-audio
+    - ui-sounds
+  audience: people who already feel the problem
+  intent:
+    - launch faster
+    - clearer first draft
+manual_notes:
+  - Edit this aggressively. Keep only the lines that feel native to the app.

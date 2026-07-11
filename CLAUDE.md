@@ -20,18 +20,29 @@ Provides real mechanical keyboard sound feedback (Cherry MX Black recordings) fo
 
 ```
 juicy-sounds/
+├── index.js                      # npm entry (JuicyKeyboard + addKeyboardSounds)
 ├── src/
-│   └── SimpleTypeWriter.js      # Main class (270 lines, complete)
+│   └── SimpleTypeWriter.js      # Main class (complete)
 ├── sounds/
-│   └── keyboard-packs/
-│       └── cherry-mx-black/
-│           ├── config.json      # Key mappings (88 keys)
-│           └── sound.ogg        # Audio sprite (2.7MB)
-├── index.html                    # Demo page
+│   └── keyboard-packs/          # THE product: real switch recordings
+│       ├── cherry-mx-black/     # config.json (88 key mappings) + sound.ogg sprite
+│       ├── cherry-mx-blue/
+│       └── topre/
+├── index.html                    # Demo page (typewriter)
+├── simple-demo.html              # Minimal example
+├── archive/                      # Retired: legacy interface sounds + old broad-library vision
+│   └── legacy-interface/        # (UI cues now live in sibling @softstack/weightless)
 ├── README.md                     # Integration docs
 ├── INTEGRATION_FEEDBACK.md       # Real-world learnings
 └── CLAUDE.md                     # This file
 ```
+
+## 👨‍👩‍👧 Sibling: @softstack/weightless
+
+Juicy = real recordings (physical textures, keyboards). Weightless = 0kb synthesis (abstract UI cues).
+Never re-add interface/UI sounds here — that territory belongs to weightless. Both libraries
+read/write the shared `softstack:sound` localStorage key ({enabled, volume}) unless
+`sharedState: false` — one mute silences the family.
 
 ## 🔑 Key Technical Decisions
 
@@ -106,9 +117,9 @@ cp src/SimpleTypeWriter.js ../your-project/utils/
 - ✅ Code audit (redundancy removed)
 
 **Next Steps:**
-- 📦 Publish to NPM as `@juicy-sounds/typewriter`
-- 🎨 Add more sound packs (Blue switches, Browns, Topre, etc.)
-- 🌐 Create GitHub repo with demo
+- 📦 Publish to NPM as `@softstack/juicy-sounds` (scope decision made — sibling of @softstack/weightless)
+- 🎨 More sound packs (Browns? Buckling spring? IBM Model M?) — Blue + Topre done
+- 🌐 Deploy the demo somewhere public
 
 ## 🔧 Integration Pattern
 

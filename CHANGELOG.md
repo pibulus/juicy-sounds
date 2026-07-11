@@ -2,6 +2,23 @@
 
 All notable changes to the Juicy Sounds project will be documented in this file.
 
+## [1.2.0] - 2026-07-11
+
+### Changed
+- **Identity sharpened**: Juicy Sounds is now purely the mechanical-keyboard-sounds library.
+  Legacy interface/UI sounds (Kenney pack, `juicy-simple.js`, old landing page) moved to
+  `archive/legacy-interface/` — that territory now belongs to the sibling library
+  [@softstack/weightless](https://github.com/pibulus/weightless) (0kb synthesis).
+- **Package renamed** to `@softstack/juicy-sounds`; entry point is now `index.js`
+  (JuicyKeyboard / addKeyboardSounds / SimpleTypeWriter) instead of the legacy `dist/juicy-simple.js`.
+- `keyboard-demo.html` promoted to `index.html` (the demo now demos the actual product).
+
+### Added
+- **Shared SoftStack sound state**: reads/writes the `softstack:sound` localStorage key
+  ({enabled, volume}) so one mute/volume choice rules all SoftStack sound libraries.
+  Opt out with `sharedState: false`.
+- README now documents all three sound packs: Cherry MX Black, Cherry MX Blue, Topre.
+
 ## [1.1.0] - 2025-01-18
 
 ### Added
